@@ -11,7 +11,7 @@ const speakers = [
     name: "Vlad Magdalin",
     tag: "Keynote",
     tagColor: "bg-primary text-primary-foreground",
-    bio: "Our founding Webflow father. Our dad joke aficionado. He puts the mad into Magdalin and will be kicking off FlowFest '25 as our keynote speaker!",
+    bio: "Our founding Webflow father. Our dad joke aficionado. He puts the mad into Magdalin and will be kicking off Fiesta Liva '26 as our keynote speaker!",
     featured: true,
   },
   {

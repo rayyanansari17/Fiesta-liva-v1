@@ -12,8 +12,8 @@ export const Navbar = () => {
     <header className="sticky top-0 z-50 border-b-2 border-ink bg-background/85 backdrop-blur">
       <nav className="container flex h-16 items-center justify-between">
         <a href="#top" className="font-display text-2xl font-extrabold tracking-tight">
-          Flow<span className="text-primary">Fest</span>
-          <span className="ml-1 font-hand text-base text-accent">'25</span>
+          Fiesta<span className="text-primary">Liva</span>
+          <span className="ml-1 font-hand text-base text-accent">'26</span>
         </a>
         <ul className="hidden items-center gap-8 md:flex">
           {links.map((l) => (

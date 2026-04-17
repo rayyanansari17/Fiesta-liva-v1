@@ -20,7 +20,7 @@ export const About = () => {
         <div className="grid items-center gap-16 lg:grid-cols-2">
           <div>
             <span className="mb-4 inline-block font-hand text-3xl text-accent -rotate-2">
-              What is FlowFest?
+              What is Fiesta Liva?
             </span>
             <h2 className="font-display text-5xl font-extrabold leading-tight md:text-6xl lg:text-7xl">
               The No.1 Fest for{" "}
