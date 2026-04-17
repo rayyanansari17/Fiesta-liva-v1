@@ -4,8 +4,8 @@ export const FinalCTA = () => {
   return (
     <section className="relative overflow-hidden border-b-2 border-ink bg-ink py-24 text-ink-foreground md:py-32">
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute left-10 top-10 font-display text-[14rem] font-extrabold">FLOW</div>
-        <div className="absolute bottom-10 right-10 font-display text-[14rem] font-extrabold">FEST</div>
+        <div className="absolute left-10 top-10 font-display text-[14rem] font-extrabold">FIESTA</div>
+        <div className="absolute bottom-10 right-10 font-display text-[14rem] font-extrabold">LIVA</div>
       </div>
 
       <div className="container relative max-w-4xl text-center">
@@ -36,11 +36,11 @@ export const Footer = () => {
     <footer className="bg-background py-12">
       <div className="container flex flex-col items-center justify-between gap-6 md:flex-row">
         <a href="#top" className="font-display text-2xl font-extrabold">
-          Flow<span className="text-primary">Fest</span>
-          <span className="ml-1 font-hand text-base text-accent">'25</span>
+          Fiesta<span className="text-primary">Liva</span>
+          <span className="ml-1 font-hand text-base text-accent">'26</span>
         </a>
         <p className="text-sm text-muted-foreground">
-          Made with <span className="text-primary">♥</span> by FlowMCR · Manchester, UK
+          Made with <span className="text-primary">♥</span> by Heroes of Humanity · Hyderabad, India
         </p>
         <div className="flex gap-4 text-sm font-semibold">
           <a href="#" className="hover:text-primary">Twitter</a>

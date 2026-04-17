@@ -8,11 +8,11 @@ import {
 const faqs = [
   {
     q: "Can I have a discount?",
-    a: "This is a non-profit event, and our goal is to make FlowFest as affordable as we possibly can whilst delivering a quality day you'll never forget. To keep ticket prices as low as possible for everyone, we're unable to offer discounts and appreciate your support for this community event.",
+    a: "This is a non-profit event, and our goal is to make Fiesta Liva as affordable as we possibly can whilst delivering a quality day you'll never forget. To keep ticket prices as low as possible for everyone, we're unable to offer discounts and appreciate your support for this community event.",
   },
   {
     q: "How do I get there?",
-    a: "FlowFest is hosted in Media City Gardens (search 'Blue Peter Garden' on Google Maps), an outdoor venue directly in front of Media City tram stop — a great way to get there from the city centre. There's also a multi-storey car park just round the corner.",
+    a: "Fiesta Liva is hosted at Shilpakala Vedika, Hyderabad — easily reachable by car or local transport, with parking available on site.",
   },
   {
     q: "Is there food included?",
@@ -24,7 +24,7 @@ const faqs = [
   },
   {
     q: "Will there be an afterparty?",
-    a: "No official afterparty, but FlowFest folks know the party never stops. We have the venue until 6 or 7pm, and last year we headed to Kargo Food Market for dinner before hitting town for karaoke. Afterparty planners welcome!",
+    a: "No official afterparty, but Fiesta Liva folks know the party never stops. Afterparty planners welcome!",
   },
 ];
 

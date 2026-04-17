@@ -24,7 +24,7 @@ export const Community = () => {
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-lg md:text-xl">
             This is a <strong>non-profit</strong> event run by <strong>volunteer</strong> community members.
-            At FlowFest our motivation is to lead with kindness, inclusivity, support and{" "}
+            At Fiesta Liva our motivation is to lead with kindness, inclusivity, support and{" "}
             <strong>FUN</strong>, obvs.
           </p>
           <Button variant="ink" size="xl" className="mt-10" asChild>
