@@ -12,7 +12,7 @@ export const Community = () => {
         <div className="mx-auto max-w-3xl text-center">
           <span className="mb-4 inline-block font-hand text-3xl -rotate-2">For the People</span>
           <h2 className="font-display text-5xl font-extrabold leading-tight md:text-6xl lg:text-7xl">
-            Where Medicine Meets the Stage
+            From Medicos, By Medicos, For Medicos
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-lg md:text-xl opacity-90">
             FiestaLiva brings together medical colleges across Telangana for a celebration of performing arts, music, technology, and academic excellence all under one roof. Built by students, for students.
