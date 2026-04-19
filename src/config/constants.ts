@@ -138,38 +138,43 @@ export const ORGANISERS = [
 
 export const TWEETS = [
   {
-    initial: "C",
-    name: "Cassie Evans",
-    handle: "@cassiecodes",
-    body: "Fiesta Liva was hands down the most fun I've had at a web event. Steel drums, pints, brilliant talks what more could you want?",
-    color: "#F5A623", // orange
+    initial: "A",
+    name: "Aisha Fatima",
+    handle: "@aishamd26",
+    body: "FiestaLiva was everything I didn't know I needed in med school. The energy, the music, the talks — nothing comes close.",
+    color: "#F04141", // primary
+    timestamp: "10:42 AM · MAY 8, 2026"
   },
   {
     initial: "K",
-    name: "Kieran Gill",
-    handle: "@kierangill",
-    body: "Manchester turned it on. The Fiesta Liva crew put together something genuinely special. Already counting down to next year.",
-    color: "#8B2D6E", // purple
+    name: "Karthik Reddy",
+    handle: "@karthikmbbs",
+    body: "Came for the CME lecture, stayed for the concert. FiestaLiva just gets what medical students actually need.",
+    color: "#6366F1", // indigo
+    timestamp: "11:15 AM · MAY 8, 2026"
   },
   {
-    initial: "I",
-    name: "Isabelle B.",
-    handle: "@isadesigns",
-    body: "The friendliest community in webdev. Genuinely felt like meeting old mates I'd never met before.",
-    color: "#3B6BB5", // blue
+    initial: "P",
+    name: "Priya Sharma",
+    handle: "@drpriya_ts",
+    body: "The Hero Talks alone were worth the ticket. Absolute goosebumps moment. Can't wait for next year.",
+    color: "#EC4899", // pink
+    timestamp: "12:03 PM · MAY 8, 2026"
   },
   {
-    initial: "E",
-    name: "Eugene Salt",
-    handle: "@eugenesalt",
-    body: "I came for the talks. I stayed for the karaoke afterparty. 10/10 would Fiesta Liva again.",
-    color: "#D94F8A", // pink
+    initial: "M",
+    name: "Mohammed Zaid",
+    handle: "@zaid_medico",
+    body: "Never thought a med fest could feel this electric. FiestaLiva 2026 was historic. See you all next year!",
+    color: "#22C55E", // green
+    timestamp: "1:30 PM · MAY 8, 2026"
   },
   {
-    initial: "R",
-    name: "Rahul P.",
-    handle: "@rahuldev",
-    body: "Outdoor venue, golden hour, banging burgers and a Vlad keynote? Take my money already.",
-    color: "#2C2040", // dark
+    initial: "S",
+    name: "Sneha Kulkarni",
+    handle: "@sneha_kims",
+    body: "From Entrepreneurship Summit to the dance championship — FiestaLiva packed everything into two insane days.",
+    color: "#E8A020", // accent
+    timestamp: "2:45 PM · MAY 8, 2026"
   },
 ];

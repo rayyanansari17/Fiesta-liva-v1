@@ -15,11 +15,11 @@ export const Love = () => {
     >
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
         {/* Heading */}
-        <div className="mb-20 text-center">
-          <h2 className="flex items-center justify-center gap-4 font-display text-6xl font-extrabold md:text-8xl">
+        <div className="mb-20 text-center px-4">
+          <h2 className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold">
             <span>#FiestaLiva</span>
             <span 
-              className="rounded-full px-8 py-2 text-white shadow-brutal"
+              className="rounded-full px-4 py-1 sm:px-8 sm:py-2 text-white shadow-brutal"
               style={{ backgroundColor: "#E8A020" }}
             >
               Love
@@ -96,7 +96,7 @@ export const Love = () => {
 
                 {/* Timestamp */}
                 <div className="mt-4 text-xs font-semibold text-[#999] uppercase tracking-wider">
-                  10:42 AM · May 8, 2026
+                  {t.timestamp}
                 </div>
               </article>
             );
