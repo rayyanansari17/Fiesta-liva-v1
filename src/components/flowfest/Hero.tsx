@@ -28,10 +28,15 @@ export const Hero = () => {
       </div>
 
       <div className="container relative z-10 flex h-full flex-col items-start justify-end pb-20 pt-32 md:pb-28">
-        <span className="mb-6 inline-flex items-center gap-2 rounded-full border-2 border-ink bg-background px-4 py-1.5 text-sm font-bold uppercase tracking-wide text-ink shadow-brutal">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
-          {SITE_CONTENT.eventDates} · {SITE_CONTENT.eventLocation}
-        </span>
+        <div className="mb-6 flex flex-wrap gap-2">
+          <span className="inline-flex items-center gap-2 rounded-full border-2 border-ink bg-background px-3 py-1 text-xs font-bold uppercase tracking-wide text-ink shadow-brutal sm:px-4 sm:py-1.5 sm:text-sm whitespace-nowrap">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
+            {SITE_CONTENT.eventDates}
+          </span>
+          <span className="inline-flex items-center gap-2 rounded-full border-2 border-ink bg-background px-3 py-1 text-xs font-bold uppercase tracking-wide text-ink shadow-brutal sm:px-4 sm:py-1.5 sm:text-sm whitespace-nowrap">
+            {SITE_CONTENT.eventLocation}
+          </span>
+        </div>
 
         <h1 className="max-w-5xl font-display text-6xl font-extrabold leading-[0.95] text-background sm:text-8xl md:text-9xl lg:text-[10rem]">
           {ENV.SITE_NAME.toUpperCase()}!{" "}

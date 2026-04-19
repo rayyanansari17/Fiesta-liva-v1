@@ -24,7 +24,7 @@ export const Navbar = ({ forceSolid = false, onReset }: { forceSolid?: boolean, 
         : "bg-transparent border-transparent text-white"
     }`}>
       <nav className="container flex h-16 items-center justify-between">
-        <a href="/" className="font-display text-2xl font-extrabold tracking-tight transition-colors duration-300">
+        <a href="/" className="font-display text-2xl font-extrabold tracking-tight transition-colors duration-300 whitespace-nowrap flex-shrink-0">
           {ENV.SITE_NAME.substring(0, 6)}<span className={`transition-colors duration-300 ${isScrolled ? "text-primary" : "text-white"}`}>{ENV.SITE_NAME.substring(6)}</span>
           <span className={`ml-1 font-hand text-base transition-colors duration-300 ${isScrolled ? "text-accent" : "text-white/90"}`}>'{SITE_CONTENT.year.substring(2)}</span>
         </a>
@@ -45,7 +45,7 @@ export const Navbar = ({ forceSolid = false, onReset }: { forceSolid?: boolean, 
           ))}
         </ul>
         <div className="flex items-center gap-4">
-          <Button variant={isScrolled ? "hero" : "secondary"} size="sm" className="transition-all duration-300" asChild>
+          <Button variant={isScrolled ? "hero" : "secondary"} size="sm" className="hidden md:inline-flex transition-all duration-300" asChild>
             <Link to="/register" onClick={onReset}>
               Buy Tickets
             </Link>

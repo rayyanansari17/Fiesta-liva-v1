@@ -123,6 +123,35 @@ const registerLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+app.get('/api/admin/sync-counter', async (req, res) => {
+  try {
+    // 1. Find the highest existing registration ID
+    const lastReg = await Registration.findOne().sort({ registrationId: -1 });
+    let seedValue = 0;
+    
+    if (lastReg && lastReg.registrationId) {
+      const match = lastReg.registrationId.match(/\d+/);
+      if (match) seedValue = parseInt(match[0]);
+    }
+
+    // 2. Update the counter document to match
+    const updatedCounter = await Counter.findOneAndUpdate(
+      { _id: 'registrationId' },
+      { seq: seedValue },
+      { upsert: true, new: true }
+    );
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'Counter synchronized with database records', 
+      newSequence: updatedCounter.seq 
+    });
+  } catch (error) {
+    console.error('Sync Error:', error);
+    res.status(500).json({ success: false, message: 'Failed to synchronize counter' });
+  }
+});
+
 app.post('/api/register', registerLimiter, async (req, res) => {
   try {
     const { firstName, lastName, email, phone, college, hallTicket, rollNumber, year } = req.body;
@@ -136,7 +165,7 @@ app.post('/api/register', registerLimiter, async (req, res) => {
     if (!lastName || !nameRegex.test(lastName)) newErrors.lastName = "Minimum 2 characters, letters only";
     if (!email || !emailRegex.test(email)) newErrors.email = "Invalid email format";
     if (!phone || !phoneRegex.test(phone)) newErrors.phone = "Must be exactly 10 digits starting with 6-9";
-    if (!college || college === 'College list coming soon') newErrors.college = "Please select a valid college";
+    if (!college) newErrors.college = "Please select a valid college";
     if (!hallTicket || !idRegex.test(hallTicket)) newErrors.hallTicket = "Minimum 5 alphanumeric characters";
     if (!rollNumber || !idRegex.test(rollNumber)) newErrors.rollNumber = "Minimum 5 alphanumeric characters";
     if (!year) newErrors.year = "Please select a year";

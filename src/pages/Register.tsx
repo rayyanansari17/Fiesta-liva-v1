@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { Navbar } from '@/components/flowfest/Navbar';
+import { MEDICAL_COLLEGES } from '@/config/colleges';
 
 const INITIAL_FORM_DATA = {
   type: 'UG (MBBS)',
@@ -12,7 +13,7 @@ const INITIAL_FORM_DATA = {
   lastName: '',
   email: '',
   phone: '',
-  college: 'College list coming soon',
+  college: '',
   hallTicket: '',
   rollNumber: '',
   year: 'MBBS 1st Year',
@@ -59,7 +60,7 @@ export default function Register() {
     if (!nameRegex.test(formData.lastName)) newErrors.lastName = "Minimum 2 characters, letters only";
     if (!emailRegex.test(formData.email)) newErrors.email = "Invalid email format";
     if (!phoneRegex.test(formData.phone)) newErrors.phone = "Must be exactly 10 digits starting with 6-9";
-    if (formData.college === 'College list coming soon') newErrors.college = "Please select a valid college";
+    if (!formData.college) newErrors.college = "Please select a valid college";
     if (!idRegex.test(formData.hallTicket)) newErrors.hallTicket = "Minimum 5 alphanumeric characters";
     if (!idRegex.test(formData.rollNumber)) newErrors.rollNumber = "Minimum 5 alphanumeric characters";
     if (!formData.year) newErrors.year = "Please select a year";
@@ -180,12 +181,14 @@ export default function Register() {
               
               <div>
                 <select 
-                  className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 ${errors.college ? 'border-[#F04141] focus-visible:ring-[#F04141] text-[#F04141]' : 'border-input focus-visible:ring-primary text-muted-foreground'}`}
+                  className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 ${errors.college ? 'border-[#F04141] focus-visible:ring-[#F04141] text-[#F04141]' : 'border-input focus-visible:ring-primary text-foreground font-medium'}`}
                   value={formData.college} 
                   onChange={e => handleInputChange('college', e.target.value)}
                 >
-                  <option value="College list coming soon" disabled>College list coming soon</option>
-                  <option value="Fake Medical College">Fake Medical College</option> 
+                  <option value="" disabled>Select College</option>
+                  {MEDICAL_COLLEGES.map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
                 </select>
                 {errors.college && <span className="text-[#F04141] text-xs mt-1 block">{errors.college}</span>}
               </div>
