@@ -1,32 +1,10 @@
+import { FAQS } from "@/config/constants";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
-const faqs = [
-  {
-    q: "Can I have a discount?",
-    a: "This is a non-profit event, and our goal is to make Fiesta Liva as affordable as we possibly can whilst delivering a quality day you'll never forget. To keep ticket prices as low as possible for everyone, we're unable to offer discounts and appreciate your support for this community event.",
-  },
-  {
-    q: "How do I get there?",
-    a: "Fiesta Liva is hosted at Shilpakala Vedika, Hyderabad — easily reachable by car or local transport, with parking available on site.",
-  },
-  {
-    q: "Is there food included?",
-    a: "Yes — a banging lunch courtesy of Kargo on the Docks is included in your ticket, plus drinks tokens to keep you topped up.",
-  },
-  {
-    q: "What should I bring?",
-    a: "Good vibes and layers. This is an all-day outdoor event in Manchester, so check the weather closer to the time and dress accordingly. There are no hands-on workshops this year, so no need to bring a laptop.",
-  },
-  {
-    q: "Will there be an afterparty?",
-    a: "No official afterparty, but Fiesta Liva folks know the party never stops. Afterparty planners welcome!",
-  },
-];
 
 export const FAQ = () => {
   return (
@@ -38,7 +16,7 @@ export const FAQ = () => {
         </h2>
 
         <Accordion type="single" collapsible className="space-y-4">
-          {faqs.map((f, i) => (
+          {FAQS.map((f, i) => (
             <AccordionItem
               key={i}
               value={`item-${i}`}

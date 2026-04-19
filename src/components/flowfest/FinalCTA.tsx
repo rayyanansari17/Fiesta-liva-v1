@@ -1,4 +1,6 @@
+import { ENV, SITE_CONTENT } from "@/config/constants";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export const FinalCTA = () => {
   return (
@@ -14,17 +16,15 @@ export const FinalCTA = () => {
         </span>
         <h2 className="font-display text-5xl font-extrabold leading-[1.05] md:text-6xl lg:text-7xl">
           Get your ticket for the{" "}
-          <span className="bg-sunset bg-clip-text text-transparent">community-led event</span> of the year.
+          <span className="inline-block bg-sunset px-4 py-1 text-white">biggest medical fest</span> of the year.
         </h2>
         <p className="mx-auto mt-6 max-w-2xl text-lg opacity-80 md:text-xl">
-          As web designers and developers, this is the kind of event we desperately wanted — so we created
-          it. No stuffy conference rooms, no dull corporate halls. Just a lovely community sharing
-          knowledge with a pint and a burger in hand.
+          FiestaLiva is everything medical college life should celebrate arts, music, tech, and excellence, all in one place. No boring auditoriums. Just pure energy, real connections, and memories you'll carry through your career.
         </p>
         <Button variant="hero" size="xl" className="mt-10" asChild>
-          <a href="https://lu.ma/aq1a429h" target="_blank" rel="noreferrer">
+          <Link to="/register">
             Grab Your Ticket →
-          </a>
+          </Link>
         </Button>
       </div>
     </section>
@@ -36,8 +36,8 @@ export const Footer = () => {
     <footer className="bg-background py-12">
       <div className="container flex flex-col items-center justify-between gap-6 md:flex-row">
         <a href="#top" className="font-display text-2xl font-extrabold">
-          Fiesta<span className="text-primary">Liva</span>
-          <span className="ml-1 font-hand text-base text-accent">'26</span>
+          {ENV.SITE_NAME.substring(0, 6)}<span className="text-primary">{ENV.SITE_NAME.substring(6)}</span>
+          <span className="ml-1 font-hand text-base text-accent">'{SITE_CONTENT.year.substring(2)}</span>
         </a>
         <p className="text-sm text-muted-foreground">
           Made with <span className="text-primary">♥</span> by Heroes of Humanity · Hyderabad, India

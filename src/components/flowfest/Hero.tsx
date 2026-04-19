@@ -1,14 +1,15 @@
-import heroImg from "@/assets/hero-festival.jpg";
+import { ENV, SITE_CONTENT, IMAGES } from "@/config/constants";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 export const Hero = () => {
   return (
-    <section id="top" className="relative overflow-hidden border-b-2 border-ink">
+    <section id="top" className="relative overflow-hidden border-b-2 border-ink h-screen">
       {/* Background */}
       <div className="absolute inset-0">
         <img
-          src={heroImg}
-          alt="FIESTA LIVA medical youth cultural festival crowd at sunset"
+          src={IMAGES.hero}
+          alt={`${ENV.SITE_NAME} festival crowd at sunset`}
           className="h-full w-full object-cover"
           width={1536}
           height={1024}
@@ -23,26 +24,26 @@ export const Hero = () => {
         </div>
       </div>
 
-      <div className="container relative z-10 flex min-h-[88vh] flex-col items-start justify-end pb-20 pt-32 md:pb-28">
+      <div className="container relative z-10 flex h-full flex-col items-start justify-end pb-20 pt-32 md:pb-28">
         <span className="mb-6 inline-flex items-center gap-2 rounded-full border-2 border-ink bg-background px-4 py-1.5 text-sm font-bold uppercase tracking-wide text-ink shadow-brutal">
           <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
-          7th May – 8th May · Shilpakala Vedika, Hyderabad
+          {SITE_CONTENT.eventDates} · {SITE_CONTENT.eventLocation}
         </span>
 
         <h1 className="max-w-5xl font-display text-6xl font-extrabold leading-[0.95] text-background sm:text-8xl md:text-9xl lg:text-[10rem]">
-          FIESTA LIVA!{" "}
-          <span className="text-highlight">2026</span>
+          {ENV.SITE_NAME.toUpperCase()}!{" "}
+          <span className="text-highlight">{SITE_CONTENT.year}</span>
         </h1>
 
         <p className="mt-8 max-w-xl text-lg text-background/90 md:text-xl">
-          Medical Youth Cultural Festival & Awards Night for Medical Students.
+          {SITE_CONTENT.heroSubtitle}
         </p>
 
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <Button variant="hero" size="xl" asChild>
-            <a href="https://lu.ma/aq1a429h" target="_blank" rel="noreferrer">
-              Buy Tickets →
-            </a>
+            <Link to="/register">
+              {SITE_CONTENT.ticketButtonText}
+            </Link>
           </Button>
           <Button variant="chunky" size="xl" asChild>
             <a href="#about">Learn More</a>

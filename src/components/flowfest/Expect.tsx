@@ -1,16 +1,4 @@
-import e1 from "@/assets/event-1.jpg";
-import e2 from "@/assets/event-2.jpg";
-import e3 from "@/assets/event-3.jpg";
-import e4 from "@/assets/event-4.jpg";
-import e5 from "@/assets/event-5.jpg";
-
-const items = [
-  { label: "Expert Talks", img: e2, color: "bg-primary" },
-  { label: "Fun + Games", img: e5, color: "bg-accent" },
-  { label: "Food + Drink", img: e4, color: "bg-highlight" },
-  { label: "Live Music", img: e3, color: "bg-ink" },
-  { label: "Community", img: e1, color: "bg-primary-glow" },
-];
+import { EXPECT_ITEMS } from "@/config/constants";
 
 export const Expect = () => {
   return (
@@ -21,12 +9,10 @@ export const Expect = () => {
         </h2>
 
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-5">
-          {items.map((it, i) => (
+          {EXPECT_ITEMS.map((it) => (
             <div
               key={it.label}
-              className={`group relative aspect-[3/4] overflow-hidden rounded-3xl border-2 border-ink shadow-brutal transition-transform hover:-translate-y-2 ${
-                i === 0 ? "lg:row-span-1" : ""
-              }`}
+              className="group relative aspect-[3/4] overflow-hidden rounded-3xl border-2 border-ink shadow-brutal transition-transform hover:-translate-y-2"
             >
               <img
                 src={it.img}
