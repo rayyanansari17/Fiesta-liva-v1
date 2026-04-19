@@ -5,10 +5,30 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import nodemailer from 'nodemailer';
+import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
+import rateLimit from 'express-rate-limit';
 
 const app = express();
+app.set('trust proxy', 1); // Trust first proxy for Render IP rate-limiting
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
+// Fix for Express 5 compatibility with express-mongo-sanitize
+app.use((req, res, next) => {
+  Object.defineProperty(req, 'query', {
+    value: { ...req.query },
+    writable: true,
+    configurable: true,
+    enumerable: true,
+  });
+  next();
+});
+app.use(mongoSanitize());
+
+app.get('/', (req, res) => {
+  res.status(200).send('Flowfest Backend Server — Up and Running');
+});
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
@@ -58,8 +78,44 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-app.post('/api/register', async (req, res) => {
+const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // Limit each IP to 5 requests per windowMs
+  message: { success: false, message: 'Too many registration attempts from this IP, please try again after an hour' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.post('/api/register', registerLimiter, async (req, res) => {
   try {
+    const { firstName, lastName, email, phone, college, hallTicket, rollNumber, year } = req.body;
+    const newErrors = {};
+    const nameRegex = /^[a-zA-Z]{2,}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[6789]\d{9}$/;
+    const idRegex = /^[a-zA-Z0-9]{5,}$/;
+
+    if (!firstName || !nameRegex.test(firstName)) newErrors.firstName = "Minimum 2 characters, letters only";
+    if (!lastName || !nameRegex.test(lastName)) newErrors.lastName = "Minimum 2 characters, letters only";
+    if (!email || !emailRegex.test(email)) newErrors.email = "Invalid email format";
+    if (!phone || !phoneRegex.test(phone)) newErrors.phone = "Must be exactly 10 digits starting with 6-9";
+    if (!college || college === 'College list coming soon') newErrors.college = "Please select a valid college";
+    if (!hallTicket || !idRegex.test(hallTicket)) newErrors.hallTicket = "Minimum 5 alphanumeric characters";
+    if (!rollNumber || !idRegex.test(rollNumber)) newErrors.rollNumber = "Minimum 5 alphanumeric characters";
+    if (!year) newErrors.year = "Please select a year";
+
+    if (Object.keys(newErrors).length > 0) {
+      return res.status(400).json({ success: false, errors: newErrors, message: 'Validation failed' });
+    }
+
+    const existingRegistration = await Registration.findOne({
+      $or: [{ email }, { phone }]
+    });
+    
+    if (existingRegistration) {
+      return res.status(409).json({ success: false, message: "You have already registered with this email or phone number" });
+    }
+
     const seq = await getNextSequenceValue('registrationId');
     const registrationId = `HOH-${String(seq).padStart(6, '0')}`;
     
@@ -88,5 +144,5 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

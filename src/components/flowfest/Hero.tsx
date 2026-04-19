@@ -6,13 +6,16 @@ export const Hero = () => {
   return (
     <section id="top" className="relative overflow-hidden border-b-2 border-ink h-screen">
       {/* Background */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 bg-[#1a0a2e]">
         <img
           src={IMAGES.hero}
           alt={`${ENV.SITE_NAME} festival crowd at sunset`}
           className="h-full w-full object-cover"
           width={1536}
           height={1024}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/30 to-background" />
       </div>

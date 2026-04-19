@@ -1,8 +1,8 @@
-import e1 from "@/assets/event-1.jpg";
-import e2 from "@/assets/event-2.jpg";
-import e3 from "@/assets/event-3.jpg";
-import e4 from "@/assets/event-4.jpg";
-import e5 from "@/assets/event-5.jpg";
+import e1 from "@/assets/event-1.webp";
+import e2 from "@/assets/event-2.webp";
+import e3 from "@/assets/event-3.webp";
+import e4 from "@/assets/event-4.webp";
+import e5 from "@/assets/event-5.webp";
 
 import s1 from "@/assets/speaker-1.jpg";
 import s2 from "@/assets/speaker-2.jpg";
@@ -10,7 +10,6 @@ import s3 from "@/assets/speaker-3.jpg";
 import s4 from "@/assets/speaker-4.jpg";
 import s5 from "@/assets/speaker-5.jpg";
 
-import heroImg from "@/assets/hero-festival.jpg";
 
 export const ENV = {
   TICKET_URL: import.meta.env.VITE_TICKET_URL || "https://lu.ma/aq1a429h",
@@ -20,7 +19,7 @@ export const ENV = {
 export const IMAGES = {
   events: [e1, e2, e3, e4, e5],
   speakers: [s1, s2, s3, s4, s5],
-  hero: heroImg,
+  hero: "/hero-festival.jpg",
 };
 
 export const SITE_CONTENT = {

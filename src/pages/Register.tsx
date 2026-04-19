@@ -24,14 +24,43 @@ export default function Register() {
     future: [] as string[]
   });
   
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  
   const [registrationId, setRegistrationId] = useState('');
 
   const nextStep = () => setStep(s => Math.min(4, s + 1));
   const prevStep = () => setStep(s => Math.max(1, s - 1));
 
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({...prev, [field]: value}));
+    if (errors[field]) {
+      setErrors(prev => ({...prev, [field]: ''}));
+    }
+  };
+
+  const validateStep1 = () => {
+    const newErrors: Record<string, string> = {};
+    const nameRegex = /^[a-zA-Z]{2,}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[6789]\d{9}$/;
+    const idRegex = /^[a-zA-Z0-9]{5,}$/;
+
+    if (!nameRegex.test(formData.firstName)) newErrors.firstName = "Minimum 2 characters, letters only";
+    if (!nameRegex.test(formData.lastName)) newErrors.lastName = "Minimum 2 characters, letters only";
+    if (!emailRegex.test(formData.email)) newErrors.email = "Invalid email format";
+    if (!phoneRegex.test(formData.phone)) newErrors.phone = "Must be exactly 10 digits starting with 6-9";
+    if (formData.college === 'College list coming soon') newErrors.college = "Please select a valid college";
+    if (!idRegex.test(formData.hallTicket)) newErrors.hallTicket = "Minimum 5 alphanumeric characters";
+    if (!idRegex.test(formData.rollNumber)) newErrors.rollNumber = "Minimum 5 alphanumeric characters";
+    if (!formData.year) newErrors.year = "Please select a year";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleNextStep1 = () => {
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone || !formData.hallTicket || !formData.rollNumber) {
-      toast.error("Please fill in all details");
+    if (!validateStep1()) {
+      toast.error("Please fix the validation errors");
       return;
     }
     nextStep();
@@ -120,30 +149,62 @@ export default function Register() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <Input placeholder="First Name" value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} />
-              <Input placeholder="Last Name" value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} />
+              <div>
+                <Input placeholder="First Name" value={formData.firstName} onChange={e => handleInputChange('firstName', e.target.value)} className={errors.firstName ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.firstName ? 'border-primary' : ''} />
+                {errors.firstName && <span className="text-[#F04141] text-xs mt-1 block">{errors.firstName}</span>}
+              </div>
+              <div>
+                <Input placeholder="Last Name" value={formData.lastName} onChange={e => handleInputChange('lastName', e.target.value)} className={errors.lastName ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.lastName ? 'border-primary' : ''} />
+                {errors.lastName && <span className="text-[#F04141] text-xs mt-1 block">{errors.lastName}</span>}
+              </div>
             </div>
             <div className="space-y-4 mb-8">
-              <Input placeholder="Email" type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
-              <Input placeholder="Phone Number" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
-              <select className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary text-muted-foreground" disabled>
-                <option>College list coming soon</option>
-              </select>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input placeholder="Hall Ticket Number" value={formData.hallTicket} onChange={e => setFormData({...formData, hallTicket: e.target.value})} />
-                <Input placeholder="University Roll Number" value={formData.rollNumber} onChange={e => setFormData({...formData, rollNumber: e.target.value})} />
+              <div>
+                <Input placeholder="Email" type="email" value={formData.email} onChange={e => handleInputChange('email', e.target.value)} className={errors.email ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.email ? 'border-primary' : ''} />
+                {errors.email && <span className="text-[#F04141] text-xs mt-1 block">{errors.email}</span>}
               </div>
-              <select 
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                value={formData.year}
-                onChange={e => setFormData({...formData, year: e.target.value})}
-              >
-                <option>MBBS 1st Year</option>
-                <option>MBBS 2nd Year</option>
-                <option>MBBS 3rd Year</option>
-                <option>Final Year Part 1</option>
-                <option>Final Year Part 2</option>
-              </select>
+              <div>
+                <Input placeholder="Phone Number" value={formData.phone} onChange={e => handleInputChange('phone', e.target.value)} className={errors.phone ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.phone ? 'border-primary' : ''} />
+                {errors.phone && <span className="text-[#F04141] text-xs mt-1 block">{errors.phone}</span>}
+              </div>
+              
+              <div>
+                <select 
+                  className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 ${errors.college ? 'border-[#F04141] focus-visible:ring-[#F04141] text-[#F04141]' : 'border-input focus-visible:ring-primary text-muted-foreground'}`}
+                  value={formData.college} 
+                  onChange={e => handleInputChange('college', e.target.value)}
+                >
+                  <option value="College list coming soon" disabled>College list coming soon</option>
+                  <option value="Fake Medical College">Fake Medical College</option> 
+                </select>
+                {errors.college && <span className="text-[#F04141] text-xs mt-1 block">{errors.college}</span>}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Input placeholder="Hall Ticket Number" value={formData.hallTicket} onChange={e => handleInputChange('hallTicket', e.target.value)} className={errors.hallTicket ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.hallTicket ? 'border-primary' : ''} />
+                  {errors.hallTicket && <span className="text-[#F04141] text-xs mt-1 block">{errors.hallTicket}</span>}
+                </div>
+                <div>
+                  <Input placeholder="University Roll Number" value={formData.rollNumber} onChange={e => handleInputChange('rollNumber', e.target.value)} className={errors.rollNumber ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.rollNumber ? 'border-primary' : ''} />
+                  {errors.rollNumber && <span className="text-[#F04141] text-xs mt-1 block">{errors.rollNumber}</span>}
+                </div>
+              </div>
+              <div>
+                <select 
+                  className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 ${errors.year ? 'border-[#F04141] focus-visible:ring-[#F04141]' : 'border-input focus-visible:ring-primary'}`}
+                  value={formData.year}
+                  onChange={e => handleInputChange('year', e.target.value)}
+                >
+                  <option disabled value="">Select Year</option>
+                  <option>MBBS 1st Year</option>
+                  <option>MBBS 2nd Year</option>
+                  <option>MBBS 3rd Year</option>
+                  <option>Final Year Part 1</option>
+                  <option>Final Year Part 2</option>
+                </select>
+                {errors.year && <span className="text-[#F04141] text-xs mt-1 block">{errors.year}</span>}
+              </div>
             </div>
 
             <Button variant="hero" className="w-full" size="xl" onClick={handleNextStep1}>NEXT →</Button>
