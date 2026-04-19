@@ -6,23 +6,25 @@ import { Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { Navbar } from '@/components/flowfest/Navbar';
 
+const INITIAL_FORM_DATA = {
+  type: 'UG (MBBS)',
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  college: 'College list coming soon',
+  hallTicket: '',
+  rollNumber: '',
+  year: 'MBBS 1st Year',
+  clinicalWorkshops: [] as string[],
+  contests: [] as string[],
+  networking: [] as string[],
+  future: [] as string[]
+};
+
 export default function Register() {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
-    type: 'UG (MBBS)',
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    college: 'College list coming soon',
-    hallTicket: '',
-    rollNumber: '',
-    year: 'MBBS 1st Year',
-    clinicalWorkshops: [] as string[],
-    contests: [] as string[],
-    networking: [] as string[],
-    future: [] as string[]
-  });
+  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
   
   const [errors, setErrors] = useState<Record<string, string>>({});
   
@@ -30,6 +32,14 @@ export default function Register() {
 
   const nextStep = () => setStep(s => Math.min(4, s + 1));
   const prevStep = () => setStep(s => Math.max(1, s - 1));
+
+  const resetForm = () => {
+    setStep(1);
+    setFormData(INITIAL_FORM_DATA);
+    setErrors({});
+    setRegistrationId('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({...prev, [field]: value}));
@@ -69,8 +79,8 @@ export default function Register() {
   const handleNextStep3 = async () => {
     try {
       toast.loading("Registering...");
-      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-      const res = await fetch(`${API_URL}/api/register`, {
+      const baseUrl = (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/$/, "");
+      const res = await fetch(`${baseUrl}/api/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
@@ -106,7 +116,7 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-background font-sans text-foreground flex flex-col items-center pt-24 pb-10 px-4">
-      <Navbar forceSolid />
+      <Navbar forceSolid onReset={resetForm} />
       {/* Progress Bar */}
       <div className="w-full max-w-3xl mb-12">
         <div className="flex items-center justify-between relative">

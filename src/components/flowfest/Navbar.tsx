@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 
-export const Navbar = ({ forceSolid = false }: { forceSolid?: boolean }) => {
+export const Navbar = ({ forceSolid = false, onReset }: { forceSolid?: boolean, onReset?: () => void }) => {
   const [isScrolled, setIsScrolled] = useState(forceSolid);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -46,7 +46,7 @@ export const Navbar = ({ forceSolid = false }: { forceSolid?: boolean }) => {
         </ul>
         <div className="flex items-center gap-4">
           <Button variant={isScrolled ? "hero" : "secondary"} size="sm" className="transition-all duration-300" asChild>
-            <Link to="/register">
+            <Link to="/register" onClick={onReset}>
               Buy Tickets
             </Link>
           </Button>

@@ -11,9 +11,24 @@ import rateLimit from 'express-rate-limit';
 
 const app = express();
 app.set('trust proxy', 1); // Trust first proxy for Render IP rate-limiting
-app.use(helmet());
-app.use(cors());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+app.use(cors({
+  origin: ['https://fiesta-liva-v1.vercel.app', 'http://localhost:8080'],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+}));
 app.use(express.json());
+
+// Request logging for debugging production 404s
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  next();
+});
 // Fix for Express 5 compatibility with express-mongo-sanitize
 app.use((req, res, next) => {
   Object.defineProperty(req, 'query', {
@@ -35,7 +50,7 @@ mongoose.connect(process.env.MONGODB_URI)
   .catch(err => console.log('MongoDB error:', err));
 
 const registrationSchema = new mongoose.Schema({
-  registrationId: String,
+  registrationId: { type: String, unique: true, index: true },
   type: String,
   firstName: String,
   lastName: String,
@@ -62,6 +77,28 @@ const counterSchema = new mongoose.Schema({
 const Counter = mongoose.model('Counter', counterSchema);
 
 async function getNextSequenceValue(sequenceName) {
+  // 1. Self-healing check: Seed counter from DB if document is missing
+  let counter = await Counter.findById(sequenceName);
+
+  if (!counter) {
+    // Check highest existing registration code to resume sequence
+    const lastReg = await Registration.findOne().sort({ registrationId: -1 });
+    let seedValue = 0;
+    
+    if (lastReg && lastReg.registrationId) {
+      const match = lastReg.registrationId.match(/\d+/);
+      if (match) seedValue = parseInt(match[0]);
+    }
+
+    // Atomic upsert of the seed value if not already present
+    await Counter.findOneAndUpdate(
+      { _id: sequenceName },
+      { $setOnInsert: { seq: seedValue } },
+      { upsert: true }
+    );
+  }
+
+  // 2. Atomic increment
   const sequenceDoc = await Counter.findByIdAndUpdate(
     sequenceName,
     { $inc: { seq: 1 } },
