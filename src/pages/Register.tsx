@@ -32,8 +32,9 @@ export default function Register() {
   
   const [registrationId, setRegistrationId] = useState('');
   const [fileName, setFileName] = useState<string>('');
+  const [isVerifying, setIsVerifying] = useState(false);
 
-  const nextStep = () => setStep(s => Math.min(4, s + 1));
+  const nextStep = () => setStep(s => Math.min(5, s + 1));
   const prevStep = () => setStep(s => Math.max(1, s - 1));
 
   const resetForm = () => {
@@ -103,25 +104,97 @@ export default function Register() {
     nextStep();
   };
 
-  const handleNextStep3 = async () => {
+  const handleNextStep3 = () => {
+    nextStep(); // Goes to Order Summary (Step 4)
+  };
+
+  const handlePayment = async () => {
     try {
-      toast.loading("Registering...");
       const baseUrl = (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/$/, "");
-      console.log("Submitting form data. idCardImage presence:", !!formData.idCardImage);
-      const res = await fetch(`${baseUrl}/api/register`, {
+      
+      toast.loading("Initiating payment...");
+      
+      // 1. Create order on backend
+      const orderRes = await fetch(`${baseUrl}/api/payment/create-order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({ amount: 99900 }) // ₹999 in paise
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Registration failed");
-      setRegistrationId(data.registrationId);
+      
+      const orderData = await orderRes.json();
       toast.dismiss();
-      toast.success("Registration Successful!");
-      nextStep();
+
+      if (!orderRes.ok) {
+        throw new Error(orderData.message || "Failed to create payment order");
+      }
+
+      // 2. Open Razorpay Checkout
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "FiestaLiva 2026",
+        description: "Festival Pass - Summerfest '26",
+        order_id: orderData.order_id,
+        prefill: {
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          contact: formData.phone
+        },
+        theme: {
+          color: "#8C0365"
+        },
+        handler: async function (response: any) {
+          try {
+            setIsVerifying(true);
+            toast.loading("Verifying payment & registering...");
+            
+            const verifyRes = await fetch(`${baseUrl}/api/payment/verify`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature,
+                formData: formData
+              })
+            });
+
+            const verifyData = await verifyRes.json();
+            setIsVerifying(false);
+            toast.dismiss();
+
+            if (verifyRes.ok) {
+              setRegistrationId(verifyData.registrationId);
+              toast.success("Registration Successful!");
+              setStep(5);
+            } else {
+              toast.error(verifyData.message || "Verification failed. Please contact support.");
+            }
+          } catch (err) {
+            setIsVerifying(false);
+            toast.dismiss();
+            toast.error("Network error during verification. Support: connect@heroesofhumanity.net");
+            console.error("Verification error:", err);
+          }
+        },
+        modal: {
+          ondismiss: function() {
+            toast.info("Payment cancelled. You can try again.");
+          }
+        }
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on('payment.failed', function (response: any) {
+        toast.error("Payment failed: " + response.error.description);
+      });
+      rzp.open();
+
     } catch (e: any) {
       toast.dismiss();
-      toast.error(e.message);
+      toast.error(e.message || "Something went wrong. Please try again.");
+      console.error("Payment initiation error:", e);
     }
   };
 
@@ -149,11 +222,11 @@ export default function Register() {
       <div className="w-full max-w-3xl mb-12">
         <div className="flex items-center justify-between relative">
           <div className="absolute left-[10%] right-[10%] top-5 -translate-y-1/2 h-[2px] bg-secondary -z-10"></div>
-          <div className="absolute left-[10%] right-[10%] top-5 -translate-y-1/2 h-[2px] bg-primary -z-10 transition-all duration-500 origin-left" style={{ transform: `scaleX(${Math.max(0, (step - 1) / 3)})` }}></div>
+          <div className="absolute left-[10%] right-[10%] top-5 -translate-y-1/2 h-[2px] bg-primary -z-10 transition-all duration-500 origin-left" style={{ transform: `scaleX(${Math.max(0, (step - 1) / 4)})` }}></div>
           
-          {["Info", "Add-ons", "Interests", "Confirm"].map((label, i) => {
+          {["Info", "Add-ons", "Interests", "Payment", "Confirm"].map((label, i) => {
             const stepNum = i + 1;
-            const isCompleted = step > stepNum;
+            const isCompleted = (step >= 5 && stepNum < 5) || step > stepNum;
             const isCurrent = step === stepNum;
             return (
               <div key={label} className="flex flex-col items-center gap-1 md:gap-2 bg-background px-1 sm:px-2 md:px-4">
@@ -380,20 +453,74 @@ export default function Register() {
         )}
 
         {step === 4 && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h2 className="font-display text-3xl md:text-4xl mb-1 tracking-tight text-center">Order Summary</h2>
+            <p className="font-hand text-accent text-2xl text-center mb-8">one last look before the magic</p>
+
+            <Card className="shadow-brutal border-2 border-ink mb-8 overflow-hidden">
+              <CardContent className="p-0">
+                <div className="p-6 bg-secondary/10 border-b-2 border-dashed border-ink/20">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="font-bold text-xl">{formData.firstName} {formData.lastName}</h3>
+                      <p className="text-muted-foreground text-sm">{formData.college}</p>
+                      <p className="text-muted-foreground text-xs uppercase tracking-widest font-bold mt-1">{formData.type}</p>
+                    </div>
+                    <div className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase">
+                      Early Bird
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-6 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">Festival Pass</span>
+                    <span className="font-bold">₹999</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-4 border-t-2 border-ink border-black">
+                    <span className="font-display text-2xl">Total</span>
+                    <span className="font-display text-2xl text-primary">₹999</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="flex gap-4">
+              <Button variant="outline" className="flex-1" size="xl" onClick={() => setStep(1)} disabled={isVerifying}>← EDIT DETAILS</Button>
+              <Button variant="hero" className="flex-1" size="xl" onClick={handlePayment} disabled={isVerifying}>
+                {isVerifying ? "VERIFYING..." : "PROCEED TO PAY →"}
+              </Button>
+            </div>
+            
+            <p className="text-center text-[10px] uppercase tracking-widest text-muted-foreground mt-6 font-bold">
+              🔒 Secure payment powered by Razorpay
+            </p>
+          </div>
+        )}
+
+        {step === 5 && (
           <div className="animate-in fade-in zoom-in duration-500 pt-8 pb-16">
-            <Card className="text-center bg-sunset text-white border-none shadow-brutal-lg max-w-lg mx-auto">
+            <Card className="text-center bg-[#8C0365] text-white border-none shadow-brutal-lg max-w-lg mx-auto">
               <CardContent className="pt-12 pb-10 flex flex-col items-center">
-                <div className="text-6xl mb-6">🎉</div>
+                <div className="text-6xl mb-6 animate-bounce">🎉</div>
                 <h2 className="font-display text-5xl font-extrabold mb-2 text-white">REGISTERED!</h2>
                 <span className="font-hand text-highlight text-3xl mb-8">your registration id</span>
                 
-                <div className="rounded-lg border-2 border-primary bg-white shadow-brutal px-8 py-4 mb-8 text-primary font-mono text-2xl font-bold tracking-widest mx-auto max-w-max">
+                <div className="rounded-lg border-2 border-white bg-white/10 backdrop-blur-sm shadow-xl px-8 py-4 mb-8 text-white font-mono text-3xl font-bold tracking-widest mx-auto max-w-max border-dashed">
                   {registrationId || "HOH-XXXXXX"}
                 </div>
                 
-                <p className="text-white/90 text-lg">
-                  Registration confirmed! Check your email for confirmation.<br/>Welcome to FiestaLiva 2026!
+                <p className="text-white/90 text-lg leading-relaxed">
+                  Registration confirmed! Check your email for confirmation.<br/><span className="font-bold">Welcome to FiestaLiva 2026!</span>
                 </p>
+
+                <Button 
+                  variant="hero" 
+                  className="mt-8 bg-highlight text-ink hover:bg-highlight/90 border-ink shadow-brutal"
+                  onClick={() => window.location.href = '/'}
+                >
+                  GO TO HOME
+                </Button>
               </CardContent>
             </Card>
           </div>

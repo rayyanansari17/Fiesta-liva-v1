@@ -10,6 +10,8 @@ import mongoSanitize from 'express-mongo-sanitize';
 import rateLimit from 'express-rate-limit';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import Razorpay from 'razorpay';
+import crypto from 'crypto';
 
 const app = express();
 app.set('trust proxy', 1); // Trust first proxy for Render IP rate-limiting
@@ -75,6 +77,9 @@ const registrationSchema = new mongoose.Schema({
   networking: [String],
   future: [String],
   amountPaid: { type: Number, default: 0 },
+  paymentId: String,
+  orderId: String,
+  paymentStatus: { type: String, default: 'pending' },
   registrationType: { type: String, enum: ['UG', 'PG'], default: 'UG' },
   createdAt: { type: Date, default: Date.now }
 });
@@ -127,6 +132,11 @@ async function getNextSequenceValue(sequenceName) {
   );
   return sequenceDoc.seq;
 }
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -296,6 +306,117 @@ app.post('/api/admin/send-email', authenticateAdmin, async (req, res) => {
   } catch (error) {
     console.error('Email error:', error);
     res.status(500).json({ success: false, message: 'Failed to send email' });
+  }
+});
+
+// Razorpay Payment Routes
+app.post('/api/payment/create-order', async (req, res) => {
+  try {
+    const { amount } = req.body;
+    if (!amount || amount < 100) {
+      return res.status(400).json({ message: 'Invalid amount' });
+    }
+
+    const options = {
+      amount: amount, // amount in paise
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+    };
+
+    const order = await razorpay.orders.create(options);
+    res.json({
+      order_id: order.id,
+      amount: order.amount,
+      currency: order.currency
+    });
+  } catch (error) {
+    console.error('Razorpay Order Error:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+app.post('/api/payment/verify', async (req, res) => {
+  try {
+    const { 
+      razorpay_payment_id, 
+      razorpay_order_id, 
+      razorpay_signature,
+      formData 
+    } = req.body;
+
+    const sign = razorpay_order_id + "|" + razorpay_payment_id;
+    const expectedSign = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(sign.toString())
+      .digest("hex");
+
+    if (razorpay_signature !== expectedSign) {
+      return res.status(400).json({ success: false, message: "Invalid payment signature" });
+    }
+
+    // Check for existing registration before saving
+    const existingRegistration = await Registration.findOne({
+      $or: [{ email: formData.email }, { phone: formData.phone }]
+    });
+    
+    if (existingRegistration && existingRegistration.paymentStatus === 'paid') {
+      return res.status(409).json({ success: false, message: "You have already registered and paid." });
+    }
+
+    const seq = await getNextSequenceValue('registrationId');
+    const registrationId = `HOH-${String(seq).padStart(6, '0')}`;
+
+    const newReg = new Registration({
+      ...formData,
+      registrationId,
+      amountPaid: 999,
+      paymentId: razorpay_payment_id,
+      orderId: razorpay_order_id,
+      paymentStatus: "paid"
+    });
+
+    await newReg.save();
+
+    // Send confirmation email
+    try {
+      const mailOptions = {
+        from: '"FiestaLiva 2026" <connect@heroesofhumanity.net>',
+        to: formData.email,
+        subject: "You're Registered for FiestaLiva 2026! 🎉",
+        html: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+            <h2 style="color: #8C0365; text-align: center;">Registration Confirmed!</h2>
+            <p>Hello <strong>${formData.firstName}</strong>,</p>
+            <p>You have successfully registered for <strong>FiestaLiva 2026 - Summerfest '26</strong>.</p>
+            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <p style="margin: 5px 0;"><strong>Registration ID:</strong> <span style="font-family: monospace; font-size: 1.1em; color: #8C0365;">${registrationId}</span></p>
+              <p style="margin: 5px 0;"><strong>College:</strong> ${formData.college}</p>
+              <p style="margin: 5px 0;"><strong>Amount Paid:</strong> ₹999</p>
+            </div>
+            <p><strong>Event Details:</strong></p>
+            <ul>
+              <li><strong>Dates:</strong> 7th – 8th May, 2026</li>
+              <li><strong>Venue:</strong> Shilpakala Vedika, Hyderabad</li>
+            </ul>
+            <p style="text-align: center; margin-top: 30px;">
+              <a href="https://fiestaliva2026.com" style="background-color: #8C0365; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Visit Website</a>
+            </p>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+            <p style="font-size: 0.8em; color: #666; text-align: center;">
+              Heroes of Humanity © 2026. If you have any questions, contact us at connect@heroesofhumanity.net
+            </p>
+          </div>
+        `
+      };
+      await transporter.sendMail(mailOptions);
+    } catch (e) {
+      console.error("Email sending failed during payment verification:", e);
+    }
+
+    res.json({ success: true, registrationId });
+  } catch (error) {
+    console.error('Payment Verification Error:', error);
+    res.status(500).json({ success: false, message: "Internal server error during verification" });
   }
 });
 
