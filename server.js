@@ -8,6 +8,8 @@ import nodemailer from 'nodemailer';
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import rateLimit from 'express-rate-limit';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 const app = express();
 app.set('trust proxy', 1); // Trust first proxy for Render IP rate-limiting
@@ -15,14 +17,22 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 app.use(cors({
-  origin: ['https://fiesta-liva-v1.vercel.app', 'http://localhost:8080'],
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:8080',
+    'https://fiesta-liva-v1.vercel.app',
+    'https://admin.heroesofhumanity.net',
+    'https://fiestaliva2026.com'
+  ],
   credentials: true,
-  preflightContinue: false,
-  optionsSuccessStatus: 204
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
-app.use(express.json());
+app.options('/{*path}', cors());
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Request logging for debugging production 404s
 app.use((req, res, next) => {
@@ -57,17 +67,28 @@ const registrationSchema = new mongoose.Schema({
   email: String,
   phone: String,
   college: String,
-  hallTicket: String,
   rollNumber: String,
+  idCardImage: String,
   year: String,
   clinicalWorkshops: [String],
   contests: [String],
   networking: [String],
   future: [String],
+  amountPaid: { type: Number, default: 0 },
+  registrationType: { type: String, enum: ['UG', 'PG'], default: 'UG' },
   createdAt: { type: Date, default: Date.now }
 });
 
 const Registration = mongoose.model('Registration', registrationSchema);
+
+const adminSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  role: { type: String, enum: ['superadmin', 'admin', 'viewer'], default: 'admin' }
+});
+
+const Admin = mongoose.model('Admin', adminSchema);
 
 // Counter Schema for ID generation
 const counterSchema = new mongoose.Schema({
@@ -152,9 +173,135 @@ app.get('/api/admin/sync-counter', async (req, res) => {
   }
 });
 
+// Admin Middleware
+const authenticateAdmin = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Authentication required' });
+  }
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.admin = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Invalid or expired token' });
+  }
+};
+
+// Admin Routes
+app.post('/api/admin/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const admin = await Admin.findOne({ username });
+    if (!admin) return res.status(401).json({ message: 'Invalid credentials' });
+
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
+
+    const token = jwt.sign(
+      { id: admin._id, username: admin.username, role: admin.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({ success: true, token, admin: { username: admin.username, role: admin.role } });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.get('/api/admin/stats', authenticateAdmin, async (req, res) => {
+  try {
+    const totalRegistrations = await Registration.countDocuments();
+    const stats = await Registration.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: "$amountPaid" },
+          ugCount: { $sum: { $cond: [{ $eq: ["$registrationType", "UG"] }, 1, 0] } },
+          pgCount: { $sum: { $cond: [{ $eq: ["$registrationType", "PG"] }, 1, 0] } }
+        }
+      }
+    ]);
+
+    const result = stats[0] || { totalAmount: 0, ugCount: 0, pgCount: 0 };
+    res.json({
+      totalRegistrations,
+      totalAmount: result.totalAmount,
+      ugCount: result.ugCount,
+      pgCount: result.pgCount
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.get('/api/admin/registrations', authenticateAdmin, async (req, res) => {
+  try {
+    const { page = 1, limit = 20, search = '', type = 'All', sortBy = 'createdAt', order = 'desc' } = req.query;
+    const query = {};
+
+    if (search) {
+      query.$or = [
+        { firstName: { $regex: search, $options: 'i' } },
+        { lastName: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { registrationId: { $regex: search, $options: 'i' } },
+        { college: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    if (type !== 'All') {
+      query.registrationType = type;
+    }
+
+    if (req.query.college && req.query.college !== 'All') {
+      query.college = req.query.college;
+    }
+
+    const registrations = await Registration.find(query)
+      .sort({ [sortBy]: order === 'desc' ? -1 : 1 })
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+
+    const total = await Registration.countDocuments(query);
+
+    res.json({
+      registrations,
+      totalPages: Math.ceil(total / limit),
+      currentPage: parseInt(page),
+      total
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/api/admin/send-email', authenticateAdmin, async (req, res) => {
+  if (req.admin.role === 'viewer') return res.status(403).json({ message: 'Insufficient permissions' });
+  
+  try {
+    const { to, subject, body } = req.body;
+    
+    const mailOptions = {
+      from: 'connect@heroesofhumanity.net',
+      to,
+      subject,
+      html: body
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.json({ success: true, message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Email error:', error);
+    res.status(500).json({ success: false, message: 'Failed to send email' });
+  }
+});
+
 app.post('/api/register', registerLimiter, async (req, res) => {
   try {
-    const { firstName, lastName, email, phone, college, hallTicket, rollNumber, year } = req.body;
+    const { firstName, lastName, email, phone, college, rollNumber, year } = req.body;
     const newErrors = {};
     const nameRegex = /^[a-zA-Z]{2,}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -166,7 +313,6 @@ app.post('/api/register', registerLimiter, async (req, res) => {
     if (!email || !emailRegex.test(email)) newErrors.email = "Invalid email format";
     if (!phone || !phoneRegex.test(phone)) newErrors.phone = "Must be exactly 10 digits starting with 6-9";
     if (!college) newErrors.college = "Please select a valid college";
-    if (!hallTicket || !idRegex.test(hallTicket)) newErrors.hallTicket = "Minimum 5 alphanumeric characters";
     if (!rollNumber || !idRegex.test(rollNumber)) newErrors.rollNumber = "Minimum 5 alphanumeric characters";
     if (!year) newErrors.year = "Please select a year";
 

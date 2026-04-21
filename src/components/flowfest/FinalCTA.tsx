@@ -15,15 +15,15 @@ export const FinalCTA = () => {
           Don't miss out
         </span>
         <h2 className="font-display text-5xl font-extrabold leading-[1.05] md:text-6xl lg:text-7xl">
-          Get your ticket for the{" "}
-          <span className="inline-block bg-sunset px-4 py-1 text-white">biggest medical fest</span> of the year.
+          Get your pass for the{" "}
+          <span className="inline-block bg-sunset px-4 py-1 text-white">biggest medical youth</span> festival of the year.
         </h2>
         <p className="mx-auto mt-6 max-w-2xl text-lg opacity-80 md:text-xl">
-          FiestaLiva is everything medical college life should celebrate arts, music, tech, and excellence, all in one place. No boring auditoriums. Just pure energy, real connections, and memories you'll carry through your career.
+          FiestaLiva is everything you dont get in your medical college life. Come celebrate talent in arts, music, dance, tech, and excellence, all in one place. No serious campus vibes. Just pure energy, real connections, and memories you'll cherish for a lifetime.
         </p>
         <Button variant="hero" size="xl" className="mt-10" asChild>
           <Link to="/register">
-            Grab Your Ticket →
+            Get Your Pass →
           </Link>
         </Button>
       </div>

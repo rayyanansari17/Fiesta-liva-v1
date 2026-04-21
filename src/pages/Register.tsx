@@ -14,8 +14,8 @@ const INITIAL_FORM_DATA = {
   email: '',
   phone: '',
   college: '',
-  hallTicket: '',
   rollNumber: '',
+  idCardImage: '',
   year: 'MBBS 1st Year',
   clinicalWorkshops: [] as string[],
   contests: [] as string[],
@@ -26,10 +26,12 @@ const INITIAL_FORM_DATA = {
 export default function Register() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   const [registrationId, setRegistrationId] = useState('');
+  const [fileName, setFileName] = useState<string>('');
 
   const nextStep = () => setStep(s => Math.min(4, s + 1));
   const prevStep = () => setStep(s => Math.max(1, s - 1));
@@ -39,6 +41,8 @@ export default function Register() {
     setFormData(INITIAL_FORM_DATA);
     setErrors({});
     setRegistrationId('');
+    setImagePreview(null);
+    setFileName('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -47,6 +51,29 @@ export default function Register() {
     if (errors[field]) {
       setErrors(prev => ({...prev, [field]: ''}));
     }
+  };
+
+  const handleIdCardUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Image too large (max 2MB)");
+      return;
+    }
+
+    const reader = new FileReader();
+    setFileName(file.name);
+    reader.onloadend = () => {
+      // reader.result contains the full base64 string
+      setFormData(prev => ({
+        ...prev,
+        idCardImage: reader.result as string
+      }));
+      setImagePreview(reader.result as string);
+      console.log('Base64 set, length:', (reader.result as string).length);
+    };
+    reader.readAsDataURL(file);
   };
 
   const validateStep1 = () => {
@@ -61,7 +88,6 @@ export default function Register() {
     if (!emailRegex.test(formData.email)) newErrors.email = "Invalid email format";
     if (!phoneRegex.test(formData.phone)) newErrors.phone = "Must be exactly 10 digits starting with 6-9";
     if (!formData.college) newErrors.college = "Please select a valid college";
-    if (!idRegex.test(formData.hallTicket)) newErrors.hallTicket = "Minimum 5 alphanumeric characters";
     if (!idRegex.test(formData.rollNumber)) newErrors.rollNumber = "Minimum 5 alphanumeric characters";
     if (!formData.year) newErrors.year = "Please select a year";
 
@@ -81,6 +107,7 @@ export default function Register() {
     try {
       toast.loading("Registering...");
       const baseUrl = (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/$/, "");
+      console.log("Submitting form data. idCardImage presence:", !!formData.idCardImage);
       const res = await fetch(`${baseUrl}/api/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -161,27 +188,27 @@ export default function Register() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <Input placeholder="First Name" value={formData.firstName} onChange={e => handleInputChange('firstName', e.target.value)} className={errors.firstName ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.firstName ? 'border-primary' : ''} />
+                <Input placeholder="First Name" value={formData.firstName} onChange={e => handleInputChange('firstName', e.target.value)} className={`h-12 ${errors.firstName ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.firstName ? 'border-primary' : ''}`} />
                 {errors.firstName && <span className="text-[#F04141] text-xs mt-1 block">{errors.firstName}</span>}
               </div>
               <div>
-                <Input placeholder="Last Name" value={formData.lastName} onChange={e => handleInputChange('lastName', e.target.value)} className={errors.lastName ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.lastName ? 'border-primary' : ''} />
+                <Input placeholder="Last Name" value={formData.lastName} onChange={e => handleInputChange('lastName', e.target.value)} className={`h-12 ${errors.lastName ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.lastName ? 'border-primary' : ''}`} />
                 {errors.lastName && <span className="text-[#F04141] text-xs mt-1 block">{errors.lastName}</span>}
               </div>
             </div>
             <div className="space-y-4 mb-8">
               <div>
-                <Input placeholder="Email" type="email" value={formData.email} onChange={e => handleInputChange('email', e.target.value)} className={errors.email ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.email ? 'border-primary' : ''} />
+                <Input placeholder="Email" type="email" value={formData.email} onChange={e => handleInputChange('email', e.target.value)} className={`h-12 ${errors.email ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.email ? 'border-primary' : ''}`} />
                 {errors.email && <span className="text-[#F04141] text-xs mt-1 block">{errors.email}</span>}
               </div>
               <div>
-                <Input placeholder="Phone Number" value={formData.phone} onChange={e => handleInputChange('phone', e.target.value)} className={errors.phone ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.phone ? 'border-primary' : ''} />
+                <Input placeholder="Phone Number" value={formData.phone} onChange={e => handleInputChange('phone', e.target.value)} className={`h-12 ${errors.phone ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.phone ? 'border-primary' : ''}`} />
                 {errors.phone && <span className="text-[#F04141] text-xs mt-1 block">{errors.phone}</span>}
               </div>
               
               <div>
                 <select 
-                  className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 ${errors.college ? 'border-[#F04141] focus-visible:ring-[#F04141] text-[#F04141]' : 'border-input focus-visible:ring-primary text-foreground font-medium'}`}
+                  className={`flex h-12 w-full rounded-md border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 ${errors.college ? 'border-[#F04141] focus-visible:ring-[#F04141] text-[#F04141]' : 'border-input focus-visible:ring-primary text-foreground font-medium'}`}
                   value={formData.college} 
                   onChange={e => handleInputChange('college', e.target.value)}
                 >
@@ -193,19 +220,59 @@ export default function Register() {
                 {errors.college && <span className="text-[#F04141] text-xs mt-1 block">{errors.college}</span>}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Input placeholder="Hall Ticket Number" value={formData.hallTicket} onChange={e => handleInputChange('hallTicket', e.target.value)} className={errors.hallTicket ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.hallTicket ? 'border-primary' : ''} />
-                  {errors.hallTicket && <span className="text-[#F04141] text-xs mt-1 block">{errors.hallTicket}</span>}
-                </div>
-                <div>
-                  <Input placeholder="University Roll Number" value={formData.rollNumber} onChange={e => handleInputChange('rollNumber', e.target.value)} className={errors.rollNumber ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.rollNumber ? 'border-primary' : ''} />
-                  {errors.rollNumber && <span className="text-[#F04141] text-xs mt-1 block">{errors.rollNumber}</span>}
+              <div>
+                <Input placeholder="University Roll Number" value={formData.rollNumber} onChange={e => handleInputChange('rollNumber', e.target.value)} className={`h-12 ${errors.rollNumber ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.rollNumber ? 'border-primary' : ''}`} />
+                {errors.rollNumber && <span className="text-[#F04141] text-xs mt-1 block">{errors.rollNumber}</span>}
+              </div>
+
+              <div>
+                <div className="space-y-1 relative">
+                  <label className="text-sm font-medium text-muted-foreground absolute right-0 -top-7">
+                    <span className="text-[10px] uppercase tracking-widest bg-secondary px-2 py-1 rounded-full text-muted-foreground font-bold">Optional</span>
+                  </label>
+                  <div 
+                    onClick={() => document.getElementById('id-upload')?.click()}
+                    className={`flex h-12 w-full items-center justify-center rounded-md border-2 border-dashed bg-background px-3 py-2 text-sm cursor-pointer transition-all hover:bg-secondary/20 ${imagePreview ? 'border-primary bg-primary/5' : 'border-input'}`}
+                  >
+                    <span className="flex items-center gap-2 font-medium text-muted-foreground">
+                      {fileName ? (
+                        <>
+                          <Check size={16} className="text-primary" />
+                          <span className="text-foreground truncate max-w-[250px]">{fileName}</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-lg">📎</span>
+                          Upload ID Card / College ID
+                        </>
+                      )}
+                    </span>
+                    <input 
+                      id="id-upload"
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleIdCardUpload}
+                      className="hidden"
+                    />
+                  </div>
                 </div>
               </div>
+              
+              {imagePreview && (
+                <div className="mt-2 relative w-24 h-24 rounded-lg overflow-hidden border-2 border-primary/20 bg-muted group animate-in fade-in zoom-in duration-300">
+                  <img src={imagePreview} alt="ID Preview" className="w-full h-full object-cover" />
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); setImagePreview(null); setFormData(p => ({...p, idCardImage: ''})); setFileName(''); }}
+                    className="absolute inset-0 bg-ink/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+
               <div>
                 <select 
-                  className={`flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 ${errors.year ? 'border-[#F04141] focus-visible:ring-[#F04141]' : 'border-input focus-visible:ring-primary'}`}
+                  className={`flex h-12 w-full rounded-md border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 ${errors.year ? 'border-[#F04141] focus-visible:ring-[#F04141]' : 'border-input focus-visible:ring-primary'}`}
                   value={formData.year}
                   onChange={e => handleInputChange('year', e.target.value)}
                 >

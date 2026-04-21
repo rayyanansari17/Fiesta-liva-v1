@@ -26,15 +26,15 @@ export const SITE_CONTENT = {
   eventDates: "7th May – 8th May",
   eventLocation: "Shilpakala Vedika, Hyderabad",
   year: "2026",
-  heroSubtitle: "Medical Youth Cultural Festival & Awards Night for Medical Students.",
-  aboutTitle: "The No.1 Fest for",
+  heroSubtitle: "Medical Youth Cultural Festival & Awards Festival for Medical Students.",
+  aboutTitle: "The No.1 Youth Festival for",
   aboutHighlight: "Medical Students", // Though the subtitle earlier said Medical Students... inconsistent!
   aboutDescription: "A seamless blend of high-energy performing arts, music, future-ready technology, and prestigious academic recognition from all medical colleges across Telangana. Everything you need to succeed.",
-  ticketButtonText: "Buy Tickets →",
+  ticketButtonText: "Get Your Pass →",
 };
 
 export const SPONSORS = [
-  "Fiesta Liva", "Heroes Of Humanity", "Medtech Preneur"
+  "Fiesta Liva", "Heroes Of Humanity", "Medtech Preneur", "Network", "Academy", "Excellence"
 ];
 
 export const NAV_LINKS = [
@@ -125,15 +125,6 @@ export const ABOUT_PHOTOS = [
   { src: e3, rotate: "-rotate-2", mt: "mt-16" },
   { src: e4, rotate: "rotate-3", mt: "mt-4" },
   { src: e5, rotate: "-rotate-1", mt: "mt-20" },
-];
-
-export const ORGANISERS = [
-  { name: "Isabel Edwards", emoji: "🌻" },
-  { name: "Josh Fry", emoji: "🍻" },
-  { name: "Benn Raistrick", emoji: "🎨" },
-  { name: "Scott Humphrey", emoji: "🎤" },
-  { name: "Rachael Ward", emoji: "✨" },
-  { name: "John Ostler", emoji: "🥁" },
 ];
 
 export const TWEETS = [

@@ -18,26 +18,28 @@ export const Navbar = ({ forceSolid = false, onReset }: { forceSolid?: boolean, 
   }, [forceSolid]);
 
   return (
-    <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-      isScrolled 
-        ? "border-b-2 border-ink bg-background/95 backdrop-blur shadow-sm text-foreground" 
-        : "bg-transparent border-transparent text-white"
-    }`}>
+    <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled
+      ? "border-b-2 border-ink bg-background/95 backdrop-blur shadow-sm text-foreground"
+      : "bg-transparent border-transparent text-white"
+      }`}>
       <nav className="container flex h-16 items-center justify-between">
-        <a href="/" className="font-display text-2xl font-extrabold tracking-tight transition-colors duration-300 whitespace-nowrap flex-shrink-0">
-          {ENV.SITE_NAME.substring(0, 6)}<span className={`transition-colors duration-300 ${isScrolled ? "text-primary" : "text-white"}`}>{ENV.SITE_NAME.substring(6)}</span>
-          <span className={`ml-1 font-hand text-base transition-colors duration-300 ${isScrolled ? "text-accent" : "text-white/90"}`}>'{SITE_CONTENT.year.substring(2)}</span>
+        <a href="/" className="flex flex-col leading-none transition-colors duration-300 whitespace-nowrap flex-shrink-0 group">
+          <span className="font-display text-2xl font-extrabold tracking-tight">
+            Fiesta<span className={`transition-colors duration-300 ${isScrolled ? "text-primary" : "text-white"}`}>Liva</span>
+          </span>
+          <span className={`text-[10px] sm:text-xs font-light tracking-[0.2em] uppercase transition-colors duration-300 ${isScrolled ? "text-foreground/70" : "text-white/80"}`}>
+            Summer fest '26
+          </span>
         </a>
         <ul className="hidden items-center gap-8 md:flex">
           {NAV_LINKS.map((l) => (
             <li key={l.href}>
               <a
                 href={l.href}
-                className={`text-sm font-semibold transition-colors duration-300 ${
-                  isScrolled 
-                    ? "text-foreground/80 hover:text-primary" 
-                    : "text-white/90 hover:text-white"
-                }`}
+                className={`text-sm font-semibold transition-colors duration-300 ${isScrolled
+                  ? "text-foreground/80 hover:text-primary"
+                  : "text-white/90 hover:text-white"
+                  }`}
               >
                 {l.label}
               </a>
@@ -47,10 +49,10 @@ export const Navbar = ({ forceSolid = false, onReset }: { forceSolid?: boolean, 
         <div className="flex items-center gap-4">
           <Button variant={isScrolled ? "hero" : "secondary"} size="sm" className="hidden md:inline-flex transition-all duration-300" asChild>
             <Link to="/register" onClick={onReset}>
-              Buy Tickets
+              Get Your Pass
             </Link>
           </Button>
-          <button 
+          <button
             className={`md:hidden p-2 rounded-md ${isScrolled ? "text-foreground" : "text-white"}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >

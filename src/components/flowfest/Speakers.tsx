@@ -12,9 +12,9 @@ export const Speakers = () => {
           <>
             <div className="mb-16 flex flex-wrap items-end justify-between gap-6">
               <div>
-                <span className="mb-3 inline-block font-hand text-3xl text-primary -rotate-2">2025 Lineup</span>
+                <span className="mb-3 inline-block font-hand text-3xl text-primary -rotate-2">2026 Lineup</span>
                 <h2 className="max-w-3xl font-display text-5xl font-extrabold leading-tight md:text-6xl lg:text-7xl">
-                  Our 2025 Speaker
+                  Our 2026 Speaker
                   <span className="ml-3 italic text-accent">Lineup</span>
                 </h2>
                 <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
@@ -24,7 +24,7 @@ export const Speakers = () => {
               </div>
               <Button variant="hero" size="lg" asChild>
                 <Link to="/register">
-                  Buy Tickets
+                  Get Your Pass
                 </Link>
               </Button>
             </div>
@@ -33,9 +33,8 @@ export const Speakers = () => {
               {SPEAKERS.map((sp) => (
                 <article
                   key={sp.name}
-                  className={`group overflow-hidden rounded-3xl border-2 border-ink bg-card shadow-brutal transition-transform hover:-translate-y-1 ${
-                    sp.featured ? "lg:col-span-1 lg:row-span-1" : ""
-                  }`}
+                  className={`group overflow-hidden rounded-3xl border-2 border-ink bg-card shadow-brutal transition-transform hover:-translate-y-1 ${sp.featured ? "lg:col-span-1 lg:row-span-1" : ""
+                    }`}
                 >
                   <div className="relative aspect-[4/5] overflow-hidden border-b-2 border-ink">
                     <img
@@ -62,7 +61,7 @@ export const Speakers = () => {
           </>
         ) : (
           <div className="mx-auto max-w-3xl text-center">
-            <span className="mb-3 inline-block font-hand text-3xl text-primary -rotate-2">2025 Lineup</span>
+            <span className="mb-3 inline-block font-hand text-3xl text-primary -rotate-2">2026 Lineup</span>
             <h2 className="mb-6 font-display text-5xl font-extrabold leading-tight md:text-6xl lg:text-7xl">
               Our Speakers Are Getting Ready <span className="inline-block animate-bounce">🎤</span>
             </h2>
@@ -71,7 +70,7 @@ export const Speakers = () => {
             </p>
             <Button variant="hero" size="lg" className="mt-10" asChild>
               <Link to="/register">
-                Grab Your Ticket
+                Get Your Pass
               </Link>
             </Button>
           </div>

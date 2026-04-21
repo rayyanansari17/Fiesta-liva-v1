@@ -16,14 +16,8 @@ export const Love = () => {
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
         {/* Heading */}
         <div className="mb-20 text-center px-4">
-          <h2 className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold">
-            <span>#FiestaLiva</span>
-            <span 
-              className="rounded-full px-4 py-1 sm:px-8 sm:py-2 text-white shadow-brutal"
-              style={{ backgroundColor: "#E8A020" }}
-            >
-              Love
-            </span>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-extrabold text-[#222]">
+            #FiestaLiva
           </h2>
         </div>
 

@@ -1,4 +1,4 @@
-import { ENV, ORGANISERS } from "@/config/constants";
+import { ENV } from "@/config/constants";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -19,22 +19,9 @@ export const Community = () => {
           </p>
           <Button variant="ink" size="xl" className="mt-10" asChild>
             <Link to="/register">
-              Buy Tickets →
+              Get Your Pass →
             </Link>
           </Button>
-        </div>
-
-        <div className="mt-20 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-          {ORGANISERS.map((o) => (
-            <div
-              key={o.name}
-              className="rounded-2xl border-2 border-ink bg-background p-5 text-center text-foreground shadow-brutal"
-            >
-              <div className="mb-2 text-4xl">{o.emoji}</div>
-              <div className="font-display font-bold">{o.name}</div>
-              <div className="text-xs text-muted-foreground">Organiser</div>
-            </div>
-          ))}
         </div>
       </div>
     </section>
