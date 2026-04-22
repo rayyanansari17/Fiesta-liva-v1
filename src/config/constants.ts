@@ -4,6 +4,14 @@ import e3 from "@/assets/event-3.webp";
 import e4 from "@/assets/event-4.webp";
 import e5 from "@/assets/event-5.webp";
 
+import imgMedtech from "@/assets/ai in healthcare and med .jpeg";
+import imgCme from "@/assets/cme lectures.jpeg";
+import imgHero from "@/assets/heroes talk .jpeg";
+import imgEntrepreneurship from "@/assets/entrepreneurship summit.jpeg";
+import imgCelebrity from "@/assets/celebrity guest.jpeg";
+import imgNetworking from "@/assets/image.png";
+import imgSummit from "@/assets/summit.jpg";
+
 import s1 from "@/assets/speaker-1.jpg";
 import s2 from "@/assets/speaker-2.jpg";
 import s3 from "@/assets/speaker-3.jpg";
@@ -26,10 +34,10 @@ export const SITE_CONTENT = {
   eventDates: "7th May – 8th May",
   eventLocation: "Shilpakala Vedika, Hyderabad",
   year: "2026",
-  heroSubtitle: "Medical Youth Cultural Festival & Awards Festival for Medical Students.",
+  heroSubtitle: "Medical Youth Cultural & Awards Festival for Medical Students.",
   aboutTitle: "The No.1 Youth Festival for",
   aboutHighlight: "Medical Students", // Though the subtitle earlier said Medical Students... inconsistent!
-  aboutDescription: "A seamless blend of high-energy performing arts, music, future-ready technology, and prestigious academic recognition from all medical colleges across Telangana. Everything you need to succeed.",
+  aboutDescription: "A seamless blend of high-energy performing arts, music, dance, future-ready technology, and prestigious academic recognition from all medical colleges across Telangana. Everything you need to succeed.",
   ticketButtonText: "Get Your Pass →",
 };
 
@@ -85,38 +93,42 @@ export const SPEAKERS = [
 
 export const FAQS = [
   {
-    q: "Can I have a discount?",
-    a: "This is a non-profit event, and our goal is to make Fiesta Liva as affordable as we possibly can whilst delivering a quality day you'll never forget. To keep ticket prices as low as possible for everyone, we're unable to offer discounts and appreciate your support for this community event.",
+    q: "What is FiestaLiva?",
+    a: "FiestaLiva is Telangana's first Medical Youth Cultural Festival, a two-day celebration bringing together medical students from across the state for live music, inter-college competitions, clinical workshops, CME lectures, Hero Talks, celebrity guests, networking sessions, and much more. It's where medicine meets the stage.",
   },
   {
-    q: "How do I get there?",
-    a: "Fiesta Liva is hosted at Shilpakala Vedika, Hyderabad easily reachable by car or local transport, with parking available on site.",
+    q: "When is it happening?",
+    a: "FiestaLiva 2026 is happening on 7th & 8th May 2026. Two days of non-stop energy, learning, and celebration.",
+  },
+  {
+    q: "Where is it happening?",
+    a: "The fest is being held at Shilpakala Vedika, Hyderabad, one of Telangana's most iconic event venues.",
   },
   {
     q: "Is there food included?",
-    a: "Yes a banging lunch courtesy of Kargo on the Docks is included in your ticket, plus drinks tokens to keep you topped up.",
+    a: "Yes! Food and refreshments will be available at the venue throughout both days. More details on the food experience will be announced soon.",
   },
   {
     q: "What should I bring?",
-    a: "Good vibes and layers. This is an all-day outdoor event in Manchester, so check the weather closer to the time and dress accordingly. There are no hands-on workshops this year, so no need to bring a laptop.",
+    a: "Bring your college ID, your registered HOH pass, and most importantly, your energy! Comfortable clothing is recommended. If you've registered for clinical workshops, any specific requirements will be shared via email before the event.",
   },
   {
-    q: "Will there be an afterparty?",
-    a: "No official afterparty, but Fiesta Liva folks know the party never stops. Afterparty planners welcome!",
+    q: "What's in it for me?",
+    a: "Everything. Live performances, inter-college contests, CME certified lectures, mentorship meets, study abroad guidance, entrepreneurship sessions, celebrity guests, and a night to remember. Whether you're here for the learning or the vibe, FiestaLiva delivers both.",
   },
 ];
 
 export const EXPECT_ITEMS = [
-  { label: "Hero Talks", img: e2, color: "bg-primary" },
-  { label: "Inter-College Competitions", img: e5, color: "bg-accent" },
-  { label: "Live Music Concert", img: e3, color: "bg-highlight" },
-  { label: "Clinical Workshops", img: e4, color: "bg-ink" },
-  { label: "MedTech Showcase", img: e1, color: "bg-primary-glow" },
-  { label: "CME Lectures", img: e2, color: "bg-primary" },
-  { label: "Celebrity Guests", img: e5, color: "bg-accent" },
-  { label: "Networking Sessions", img: e3, color: "bg-highlight" },
-  { label: "Entrepreneurship Summit", img: e4, color: "bg-ink" },
-  { label: "Community & Mentorship", img: e1, color: "bg-primary-glow" },
+  { label: "Inter-College Competitions", img: e5, color: "bg-accent", imagePosition: "top" },
+  { label: "Live Music Concert", img: e3, color: "bg-highlight", imagePosition: "top" },
+  { label: "Clinical Workshops", img: e4, color: "bg-ink", imagePosition: "top" },
+  { label: "MedTech Showcase", img: imgMedtech, color: "bg-primary-glow", imagePosition: "top" },
+  { label: "CME Lectures", img: imgCme, color: "bg-primary", imagePosition: "top" },
+  { label: "Celebrity Guests", img: imgCelebrity, color: "bg-accent", imagePosition: "top" },
+  { label: "Networking Sessions", img: imgNetworking, color: "bg-highlight", imagePosition: "top" },
+  { label: "Entrepreneurship Summit", img: imgEntrepreneurship, color: "bg-ink", imagePosition: "top" },
+  { label: "Community & Mentorship", img: imgSummit, color: "bg-primary-glow", imagePosition: "top" },
+  { label: "Hero Talks", img: imgHero, color: "bg-primary", imagePosition: "top" },
 ];
 
 export const ABOUT_PHOTOS = [
@@ -132,7 +144,7 @@ export const TWEETS = [
     initial: "A",
     name: "Aisha Fatima",
     handle: "@aishamd26",
-    body: "FiestaLiva was everything I didn't know I needed in med school. The energy, the music, the talks — nothing comes close.",
+    body: "FiestaLiva was everything I didn't know I needed in med school. The energy, the music, the talks, nothing comes close.",
     color: "#F04141", // primary
     timestamp: "10:42 AM · MAY 8, 2026"
   },
@@ -164,7 +176,7 @@ export const TWEETS = [
     initial: "S",
     name: "Sneha Kulkarni",
     handle: "@sneha_kims",
-    body: "From Entrepreneurship Summit to the dance championship — FiestaLiva packed everything into two insane days.",
+    body: "From Entrepreneurship Summit to the dance championship,FiestaLiva packed everything into two insane days.",
     color: "#E8A020", // accent
     timestamp: "2:45 PM · MAY 8, 2026"
   },
