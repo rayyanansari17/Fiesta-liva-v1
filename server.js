@@ -23,6 +23,9 @@ app.use(cors({
     'http://localhost:5173',
     'http://localhost:5174',
     'http://localhost:8080',
+    'https://fiesta-liva-admin.vercel.app',
+    'https://fiestaliva.com',
+    'https://www.fiestaliva.com',
     'https://fiesta-liva-v1.vercel.app',
     'https://admin.heroesofhumanity.net',
     'https://fiestaliva2026.com'
