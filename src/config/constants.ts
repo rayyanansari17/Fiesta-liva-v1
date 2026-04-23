@@ -119,7 +119,7 @@ export const EXPECT_ITEMS = [
   { label: "Inter-College Competitions", img: e5, color: "bg-accent" },
   { label: "Live Music Concert", img: e3, color: "bg-highlight" },
   { label: "Clinical Workshops", img: e4, color: "bg-ink" },
-  { label: "MedTech Showcase", img: imgMedtech, color: "bg-primary-glow" },
+  { label: "MedTech Showcase", img: imgMedtech, color: "bg-primary-glow", position: "object-top" },
   { label: "CME Lectures", img: imgCme, color: "bg-primary" },
   { label: "Celebrity Guests", img: imgCelebrity, color: "bg-accent" },
   { label: "Networking Sessions", img: imgNetworking, color: "bg-highlight" },
