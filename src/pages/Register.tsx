@@ -27,9 +27,9 @@ export default function Register() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({});
-  
+
   const [registrationId, setRegistrationId] = useState('');
   const [fileName, setFileName] = useState<string>('');
   const [isVerifying, setIsVerifying] = useState(false);
@@ -48,9 +48,9 @@ export default function Register() {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({...prev, [field]: value}));
+    setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({...prev, [field]: ''}));
+      setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
 
@@ -111,16 +111,16 @@ export default function Register() {
   const handlePayment = async () => {
     try {
       const baseUrl = (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/$/, "");
-      
+
       toast.loading("Initiating payment...");
-      
+
       // 1. Create order on backend
       const orderRes = await fetch(`${baseUrl}/api/payment/create-order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: 99900 }) // ₹999 in paise
       });
-      
+
       const orderData = await orderRes.json();
       toast.dismiss();
 
@@ -148,7 +148,7 @@ export default function Register() {
           try {
             setIsVerifying(true);
             toast.loading("Verifying payment & registering...");
-            
+
             const verifyRes = await fetch(`${baseUrl}/api/payment/verify`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -179,7 +179,7 @@ export default function Register() {
           }
         },
         modal: {
-          ondismiss: function() {
+          ondismiss: function () {
             toast.info("Payment cancelled. You can try again.");
           }
         }
@@ -200,7 +200,7 @@ export default function Register() {
 
   const clinicalOptions = ["Basic Life Support (BLS)", "Advanced Life Support (ALS)", "Trauma Care in Emergency", "Obstetrics Emergency", "Pediatric Emergency"];
   const contestOptions = ["\"Rhythm of Youth\" Group Dance Championship", "\"Voice of Medicos\" Group Songs Championship", "\"Unity in Diversity\" Cultural Music & Dance Performance", "\"An Ode to Peace\" Musical Theatrical Performance"];
-  
+
   const networkingOptions = ["USMLE Preparation", "PLAB (UK)", "MRCP / MRCS / MRCOG", "AMC (Australia)", "NZREX (New Zealand)", "MCC (Canada)", "SMLE (Saudi Arabia)", "PRES", "FMGs", "Speed Advice Event Q&A Sessions", "Heroes of Humanity Network Meet", "Entrepreneurship & MedTech Startups", "Clinical Research"];
   const futureOptions = ["AI & MedTech Entrepreneurship", "Doing PG in India", "Doing PG Abroad", "Working Abroad", "Working in India", "Looking for Mentors", "Financial Planning for Doctors", "Alternate Career Pathways", "Clinical Research & Publishing"];
 
@@ -223,16 +223,15 @@ export default function Register() {
         <div className="flex items-center justify-between relative">
           <div className="absolute left-[10%] right-[10%] top-5 -translate-y-1/2 h-[2px] bg-secondary -z-10"></div>
           <div className="absolute left-[10%] right-[10%] top-5 -translate-y-1/2 h-[2px] bg-primary -z-10 transition-all duration-500 origin-left" style={{ transform: `scaleX(${Math.max(0, (step - 1) / 4)})` }}></div>
-          
+
           {["Info", "Add-ons", "Interests", "Payment", "Confirm"].map((label, i) => {
             const stepNum = i + 1;
             const isCompleted = (step >= 5 && stepNum < 5) || step > stepNum;
             const isCurrent = step === stepNum;
             return (
               <div key={label} className="flex flex-col items-center gap-1 md:gap-2 bg-background px-1 sm:px-2 md:px-4">
-                <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold text-xs md:text-sm transition-colors duration-300 ${
-                  isCompleted ? "bg-primary text-white ring-2 ring-primary ring-offset-2 ring-offset-background" : isCurrent ? "bg-accent text-white shadow-brutal" : "border-2 border-secondary text-muted-foreground bg-background"
-                }`}>
+                <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center font-bold text-xs md:text-sm transition-colors duration-300 ${isCompleted ? "bg-primary text-white ring-2 ring-primary ring-offset-2 ring-offset-background" : isCurrent ? "bg-accent text-white shadow-brutal" : "border-2 border-secondary text-muted-foreground bg-background"
+                  }`}>
                   {isCompleted ? <Check size={16} className="w-4 h-4 md:w-5 md:h-5" /> : stepNum}
                 </div>
                 <span className="font-hand text-base md:text-lg leading-none mt-1">{label}</span>
@@ -247,16 +246,16 @@ export default function Register() {
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h2 className="font-display text-3xl md:text-4xl mb-1 tracking-tight">Personal & Academic Information</h2>
             <span className="font-hand text-accent text-2xl inline-block mb-8">tell us about yourself</span>
-            
+
             <div className="flex gap-4 mb-6">
-              <button 
-                onClick={() => setFormData({...formData, type: 'UG (MBBS)'})}
+              <button
+                onClick={() => setFormData({ ...formData, type: 'UG (MBBS)', year: '' })}
                 className={`flex-1 py-3 px-6 rounded-full font-bold transition-all ${formData.type === 'UG (MBBS)' ? 'bg-primary text-white shadow-brutal' : 'border-2 border-primary text-primary hover:bg-primary/10'}`}
               >UG (MBBS)</button>
-              <button 
-                onClick={() => setFormData({...formData, type: 'PG (MBBS)'})}
-                className={`flex-1 py-3 px-6 rounded-full font-bold transition-all ${formData.type === 'PG (MBBS)' ? 'bg-primary text-white shadow-brutal' : 'border-2 border-primary text-primary hover:bg-primary/10'}`}
-              >PG (MBBS)</button>
+              <button
+                onClick={() => setFormData({ ...formData, type: 'PG (MD/MS/DNB)', year: '' })}
+                className={`flex-1 py-3 px-6 rounded-full font-bold transition-all ${formData.type === 'PG (MD/MS/DNB)' ? 'bg-primary text-white shadow-brutal' : 'border-2 border-primary text-primary hover:bg-primary/10'}`}
+              >PG (MD/MS/DNB)</button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -278,11 +277,11 @@ export default function Register() {
                 <Input placeholder="Phone Number" value={formData.phone} onChange={e => handleInputChange('phone', e.target.value)} className={`h-12 ${errors.phone ? 'border-[#F04141] focus-visible:ring-[#F04141]' : formData.phone ? 'border-primary' : ''}`} />
                 {errors.phone && <span className="text-[#F04141] text-xs mt-1 block">{errors.phone}</span>}
               </div>
-              
+
               <div>
-                <select 
+                <select
                   className={`flex h-12 w-full rounded-md border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 ${errors.college ? 'border-[#F04141] focus-visible:ring-[#F04141] text-[#F04141]' : 'border-input focus-visible:ring-primary text-foreground font-medium'}`}
-                  value={formData.college} 
+                  value={formData.college}
                   onChange={e => handleInputChange('college', e.target.value)}
                 >
                   <option value="" disabled>Select College</option>
@@ -303,7 +302,7 @@ export default function Register() {
                   <label className="text-sm font-medium text-muted-foreground absolute right-0 -top-7">
                     <span className="text-[10px] uppercase tracking-widest bg-secondary px-2 py-1 rounded-full text-muted-foreground font-bold">Optional</span>
                   </label>
-                  <div 
+                  <div
                     onClick={() => document.getElementById('id-upload')?.click()}
                     className={`flex h-12 w-full items-center justify-center rounded-md border-2 border-dashed bg-background px-3 py-2 text-sm cursor-pointer transition-all hover:bg-secondary/20 ${imagePreview ? 'border-primary bg-primary/5' : 'border-input'}`}
                   >
@@ -320,22 +319,22 @@ export default function Register() {
                         </>
                       )}
                     </span>
-                    <input 
+                    <input
                       id="id-upload"
-                      type="file" 
-                      accept="image/*" 
+                      type="file"
+                      accept="image/*"
                       onChange={handleIdCardUpload}
                       className="hidden"
                     />
                   </div>
                 </div>
               </div>
-              
+
               {imagePreview && (
                 <div className="mt-2 relative w-24 h-24 rounded-lg overflow-hidden border-2 border-primary/20 bg-muted group animate-in fade-in zoom-in duration-300">
                   <img src={imagePreview} alt="ID Preview" className="w-full h-full object-cover" />
-                  <button 
-                    onClick={(e) => { e.stopPropagation(); setImagePreview(null); setFormData(p => ({...p, idCardImage: ''})); setFileName(''); }}
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setImagePreview(null); setFormData(p => ({ ...p, idCardImage: '' })); setFileName(''); }}
                     className="absolute inset-0 bg-ink/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold"
                   >
                     Remove
@@ -344,17 +343,18 @@ export default function Register() {
               )}
 
               <div>
-                <select 
+                <select
                   className={`flex h-12 w-full rounded-md border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 ${errors.year ? 'border-[#F04141] focus-visible:ring-[#F04141]' : 'border-input focus-visible:ring-primary'}`}
                   value={formData.year}
                   onChange={e => handleInputChange('year', e.target.value)}
                 >
                   <option disabled value="">Select Year</option>
-                  <option>MBBS 1st Year</option>
-                  <option>MBBS 2nd Year</option>
-                  <option>MBBS 3rd Year</option>
-                  <option>Final Year Part 1</option>
-                  <option>Final Year Part 2</option>
+                  {(formData.type === 'UG (MBBS)'
+                    ? ['MBBS 1st Year', 'MBBS 2nd Year', 'MBBS 3rd Year', 'Final Year Part 1', 'Final Year Part 2']
+                    : ['PG 1st Year', 'PG 2nd Year', 'PG Clinical']
+                  ).map(opt => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
                 </select>
                 {errors.year && <span className="text-[#F04141] text-xs mt-1 block">{errors.year}</span>}
               </div>
@@ -471,7 +471,7 @@ export default function Register() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="p-6 space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-muted-foreground">Festival Pass</span>
@@ -491,7 +491,7 @@ export default function Register() {
                 {isVerifying ? "VERIFYING..." : "PROCEED TO PAY →"}
               </Button>
             </div>
-            
+
             <p className="text-center text-[10px] uppercase tracking-widest text-muted-foreground mt-6 font-bold">
               🔒 Secure payment powered by Razorpay
             </p>
@@ -505,17 +505,17 @@ export default function Register() {
                 <div className="text-6xl mb-6 animate-bounce">🎉</div>
                 <h2 className="font-display text-5xl font-extrabold mb-2 text-white">REGISTERED!</h2>
                 <span className="font-hand text-highlight text-3xl mb-8">your registration id</span>
-                
+
                 <div className="rounded-lg border-2 border-white bg-white/10 backdrop-blur-sm shadow-xl px-8 py-4 mb-8 text-white font-mono text-3xl font-bold tracking-widest mx-auto max-w-max border-dashed">
                   {registrationId || "HOH-XXXXXX"}
                 </div>
-                
+
                 <p className="text-white/90 text-lg leading-relaxed">
-                  Registration confirmed! Check your email for confirmation.<br/><span className="font-bold">Welcome to FiestaLiva 2026!</span>
+                  Registration confirmed! Check your email for confirmation.<br /><span className="font-bold">Welcome to FiestaLiva 2026!</span>
                 </p>
 
-                <Button 
-                  variant="hero" 
+                <Button
+                  variant="hero"
                   className="mt-8 bg-highlight text-ink hover:bg-highlight/90 border-ink shadow-brutal"
                   onClick={() => window.location.href = '/'}
                 >
