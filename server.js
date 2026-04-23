@@ -23,9 +23,6 @@ app.use(cors({
     'http://localhost:5173',
     'http://localhost:5174',
     'http://localhost:8080',
-    'https://fiesta-liva-admin.vercel.app',
-    'https://fiestaliva.com',
-    'https://www.fiestaliva.com',
     'https://fiesta-liva-v1.vercel.app',
     'https://admin.heroesofhumanity.net',
     'https://fiestaliva2026.com'
@@ -383,64 +380,31 @@ app.post('/api/payment/verify', async (req, res) => {
     // Send confirmation email
     try {
       const mailOptions = {
-        from: '"FiestaLiva Team" <connect@heroesofhumanity.net>',
-        replyTo: 'connect@heroesofhumanity.net',
+        from: '"FiestaLiva 2026" <connect@heroesofhumanity.net>',
         to: formData.email,
-        subject: "Your FiestaLiva 2026 Registration is Confirmed",
-        text: `Hello ${formData.firstName},
-
-Your registration for FiestaLiva 2026 is confirmed!
-
-Registration ID: ${registrationId}
-Name: ${formData.firstName} ${formData.lastName}
-College: ${formData.college}
-Amount Paid: ₹999
-
-Event: 7th & 8th May 2026
-Venue: Shilpakala Vedika, Hyderabad
-
-Save your Registration ID - you'll need it at the entry gate.
-
-Visit: https://fiestaliva2026.com
-
-Heroes of Humanity
-connect@heroesofhumanity.net`,
+        subject: "You're Registered for FiestaLiva 2026! 🎉",
         html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333333;">
-            <div style="background-color: #351E3E; padding: 30px 20px; text-align: center; border-radius: 8px 8px 0 0;">
-              <h1 style="color: #ffffff; margin: 0; font-family: 'Bricolage Grotesque', Arial, sans-serif; font-size: 24px; font-weight: bold;">FiestaLiva • Summerfest '26</h1>
-              <p style="color: #ffffff; margin: 5px 0 0 0; font-size: 16px;">7th &amp; 8th May 2026</p>
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+            <h2 style="color: #8C0365; text-align: center;">Registration Confirmed!</h2>
+            <p>Hello <strong>${formData.firstName}</strong>,</p>
+            <p>You have successfully registered for <strong>FiestaLiva 2026 - Summerfest '26</strong>.</p>
+            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <p style="margin: 5px 0;"><strong>Registration ID:</strong> <span style="font-family: monospace; font-size: 1.1em; color: #8C0365;">${registrationId}</span></p>
+              <p style="margin: 5px 0;"><strong>College:</strong> ${formData.college}</p>
+              <p style="margin: 5px 0;"><strong>Amount Paid:</strong> ₹999</p>
             </div>
-            <div style="padding: 30px 20px; border-left: 1px solid #e0e0e0; border-right: 1px solid #e0e0e0;">
-              <p style="font-size: 16px; margin-top: 0;">Hello ${formData.firstName}! 👋</p>
-              <p style="font-size: 16px; line-height: 1.5;">Your pass has been confirmed for FiestaLiva 2026 - Summerfest '26. We can't wait to see you there.</p>
-              
-              <div style="background-color: #f8f8f8; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin: 25px 0;">
-                <h3 style="margin: 0 0 15px 0; font-size: 14px; color: #666666; text-transform: uppercase; letter-spacing: 1px;">Your Registration Details</h3>
-                <p style="margin: 5px 0;"><strong>Registration ID:</strong> <span style="font-family: monospace; color: #8C0365; font-size: 18px; font-weight: bold;">${registrationId}</span></p>
-                <p style="margin: 5px 0;"><strong>Name:</strong> ${formData.firstName} ${formData.lastName}</p>
-                <p style="margin: 5px 0;"><strong>College:</strong> ${formData.college}</p>
-                <p style="margin: 5px 0;"><strong>Program:</strong> ${formData.registrationType || 'UG'} (MBBS)</p>
-                <p style="margin: 5px 0;"><strong>Amount Paid:</strong> ₹999</p>
-              </div>
-
-              <div style="background-color: #f8f8f8; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin: 25px 0;">
-                <h3 style="margin: 0 0 15px 0; font-size: 14px; color: #666666; text-transform: uppercase; letter-spacing: 1px;">Event Details</h3>
-                <p style="margin: 5px 0;">📅 <strong>7th &amp; 8th May 2026</strong></p>
-                <p style="margin: 5px 0;">📍 <strong>Shilpakala Vedika, Hyderabad</strong></p>
-              </div>
-
-              <div style="text-align: center; margin: 35px 0;">
-                <a href="https://fiestaliva2026.com" style="background-color: #8C0365; color: #ffffff; text-decoration: none; padding: 12px 32px; border-radius: 25px; font-weight: bold; display: inline-block;">Visit Website</a>
-              </div>
-
-              <p style="font-size: 16px; text-align: center; color: #555555;">Save your Registration ID — you'll need it at the entry gate.</p>
-            </div>
-            <div style="background-color: #f5f5f5; padding: 20px; text-align: center; border-radius: 0 0 8px 8px; border: 1px solid #e0e0e0; border-top: none;">
-              <p style="margin: 0; font-size: 12px; color: #888888;">Heroes of Humanity &copy; 2026</p>
-              <p style="margin: 5px 0 0 0; font-size: 12px; color: #888888;">connect@heroesofhumanity.net</p>
-              <p style="margin: 10px 0 0 0; font-size: 10px; color: #aaaaaa;">You received this because you registered for FiestaLiva 2026</p>
-            </div>
+            <p><strong>Event Details:</strong></p>
+            <ul>
+              <li><strong>Dates:</strong> 7th – 8th May, 2026</li>
+              <li><strong>Venue:</strong> Shilpakala Vedika, Hyderabad</li>
+            </ul>
+            <p style="text-align: center; margin-top: 30px;">
+              <a href="https://fiestaliva2026.com" style="background-color: #8C0365; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Visit Website</a>
+            </p>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+            <p style="font-size: 0.8em; color: #666; text-align: center;">
+              Heroes of Humanity © 2026. If you have any questions, contact us at connect@heroesofhumanity.net
+            </p>
           </div>
         `
       };

@@ -21,8 +21,7 @@ export const Expect = () => {
                   loading="lazy"
                   width={800}
                   height={800}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  style={{ objectPosition: it.imagePosition || "center" }}
+                  className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
                 />
               </div>
               <div className="bg-background px-4 py-4">

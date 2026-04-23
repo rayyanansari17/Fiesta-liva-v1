@@ -249,11 +249,11 @@ export default function Register() {
 
             <div className="flex gap-4 mb-6">
               <button
-                onClick={() => setFormData({ ...formData, type: 'UG (MBBS)', year: '' })}
+                onClick={() => setFormData({ ...formData, type: 'UG (MBBS)' })}
                 className={`flex-1 py-3 px-6 rounded-full font-bold transition-all ${formData.type === 'UG (MBBS)' ? 'bg-primary text-white shadow-brutal' : 'border-2 border-primary text-primary hover:bg-primary/10'}`}
               >UG (MBBS)</button>
               <button
-                onClick={() => setFormData({ ...formData, type: 'PG (MD/MS/DNB)', year: '' })}
+                onClick={() => setFormData({ ...formData, type: 'PG (MD/MS/DNB)' })}
                 className={`flex-1 py-3 px-6 rounded-full font-bold transition-all ${formData.type === 'PG (MD/MS/DNB)' ? 'bg-primary text-white shadow-brutal' : 'border-2 border-primary text-primary hover:bg-primary/10'}`}
               >PG (MD/MS/DNB)</button>
             </div>
@@ -349,12 +349,11 @@ export default function Register() {
                   onChange={e => handleInputChange('year', e.target.value)}
                 >
                   <option disabled value="">Select Year</option>
-                  {(formData.type === 'UG (MBBS)'
-                    ? ['MBBS 1st Year', 'MBBS 2nd Year', 'MBBS 3rd Year', 'Final Year Part 1', 'Final Year Part 2']
-                    : ['PG 1st Year', 'PG 2nd Year', 'PG Clinical']
-                  ).map(opt => (
-                    <option key={opt} value={opt}>{opt}</option>
-                  ))}
+                  <option>MBBS 1st Year</option>
+                  <option>MBBS 2nd Year</option>
+                  <option>MBBS 3rd Year</option>
+                  <option>Final Year Part 1</option>
+                  <option>Final Year Part 2</option>
                 </select>
                 {errors.year && <span className="text-[#F04141] text-xs mt-1 block">{errors.year}</span>}
               </div>
